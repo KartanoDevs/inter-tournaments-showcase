@@ -1,0 +1,61 @@
+<div class="page-container">
+  <h1 class="page-title text-glow-magenta">Plantilla Oficial</h1>
+
+  <!-- Tabs Personalizadas -->
+  <div class="neon-tabs">
+    <button class="tab-btn" [class.active]="activeTab() === 'male'" (click)="setTab('male')">
+      Masculino
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'female'" (click)="setTab('female')">
+      Femenino
+    </button>
+  </div>
+
+  <!-- Estado de Carga -->
+  <div *ngIf="isLoading()" class="loading-state">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--neon-cyan)"></i>
+    <p>Cargando plantilla...</p>
+  </div>
+
+  <!-- Rejilla de Jugadores -->
+  <div class="roster-grid" *ngIf="!isLoading()">
+    @for (player of filteredPlayers(); track player.id) {
+      <app-player-card [player]="player" [gender]="activeTab() === 'male' ? 'MALE' : 'FEMALE'"
+        (cardClick)="openPlayer($event)">
+      </app-player-card>
+    } @empty {
+      <div class="empty-state">
+        <i class="pi pi-users"></i>
+        <p>No hay jugadores en esta categoría.</p>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ======================== POKÉBALL LOADER (solo cuando isPoke = true) ======================== -->
+<app-poke-loader *ngIf="showLoader()" (done)="onLoaderDone()"></app-poke-loader>
+
+<!-- ======================== POPUP / LIGHTBOX DEL JUGADOR ======================== -->
+<div class="player-overlay" *ngIf="selectedPlayer() && !showLoader()" (click)="closePlayer()">
+  <div class="player-popup" (click)="$event.stopPropagation()">
+    <button class="popup-close" (click)="closePlayer()">
+      <i class="pi pi-times"></i>
+    </button>
+
+    <div class="popup-image-wrapper">
+      <img *ngIf="selectedPlayer()?.imageUrl" [src]="selectedPlayer()?.imageUrl | mediaUrl"
+        [alt]="selectedPlayer()?.firstName" class="popup-full-img" />
+      <div *ngIf="!selectedPlayer()?.imageUrl" class="popup-no-image">
+        <i class="pi pi-user"></i>
+      </div>
+    </div>
+
+    <div class="popup-info">
+      <div class="popup-number text-glow-magenta">{{ selectedPlayer()?.number }}</div>
+      <h2 class="popup-name text-glow-cyan">
+        {{ selectedPlayer()?.nickname || (selectedPlayer()?.firstName + ' ' + selectedPlayer()?.lastName) }}
+      </h2>
+      <span class="popup-position">{{ selectedPlayer()?.position | positionLabel }}</span>
+    </div>
+  </div>
+</div>

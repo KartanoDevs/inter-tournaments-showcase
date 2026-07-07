@@ -1,0 +1,27 @@
+<div class="page-container">
+  <h1 class="page-title text-glow-magenta">Próximos Eventos</h1>
+
+  <div class="events-list">
+    @for (event of upcomingEvents(); track event.id) {
+      <div class="event-card glow-cyan">
+        <div class="event-header">
+          <span class="event-date">{{ event.date }}</span>
+          <span class="event-time"><i class="pi pi-clock"></i> {{ event.time }}</span>
+        </div>
+        <div class="event-body">
+          <h2 class="opponent-name">{{ event.opponent }}</h2>
+          <p class="event-location"><i class="pi pi-map-marker"></i> {{ event.location }}</p>
+        </div>
+        <div class="event-footer">
+          <app-neon-button variant="reject" size="sm">Ver Detalles</app-neon-button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <i class="pi pi-calendar-times"></i>
+        <h3>Sin Torneos Pendientes</h3>
+        <p>No hay batallas programadas en el radar por el momento.</p>
+      </div>
+    }
+  </div>
+</div>

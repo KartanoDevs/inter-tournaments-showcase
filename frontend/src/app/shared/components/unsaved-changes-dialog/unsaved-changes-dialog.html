@@ -1,0 +1,20 @@
+<div class="unsaved-overlay" *ngIf="visible">
+  <div class="unsaved-box" (click)="$event.stopPropagation()">
+    <div class="unsaved-header">
+      <i class="pi pi-exclamation-triangle text-yellow-400 text-2xl mr-3"></i>
+      <h3 class="m-0 font-orbitron text-white">Cambios sin guardar</h3>
+    </div>
+    <div class="unsaved-body">
+      <p class="text-gray-300">Tienes datos modificados en el formulario. Si sales ahora, perderás todos los cambios.</p>
+      <p class="text-gray-400 text-sm mt-2">¿Estás seguro de que quieres descartar los cambios y salir?</p>
+    </div>
+    <div class="unsaved-footer">
+      <p-button styleClass="p-button-text p-button-secondary" (onClick)="onCancel()">
+        <i class="pi pi-times mr-2"></i><span>Cancelar</span>
+      </p-button>
+      <p-button styleClass="p-button-outlined p-button-danger" (onClick)="onConfirm()">
+        <i class="pi pi-check mr-2"></i><span>Salir y Descartar</span>
+      </p-button>
+    </div>
+  </div>
+</div>

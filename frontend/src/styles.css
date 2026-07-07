@@ -1,0 +1,224 @@
+/* ==========================================================================
+   INTER AUU - NEON DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  /* Fondos (Backgrounds) */
+  --bg-dark: #090B14;
+  --bg-card: #12162D;
+
+  /* Colores Neón (Acentos) */
+  --neon-cyan: #00E5FF;
+  --neon-magenta: #FF00FF;
+
+  /* Textos */
+  --text-main: #FFFFFF;
+  --text-muted: #8AA4C8;
+
+  /* PrimeNG Overrides (Forzando la paleta Neón) */
+  --primary-color: var(--neon-magenta);
+  --surface-ground: var(--bg-dark);
+  --surface-card: var(--bg-card);
+  --text-color: var(--text-main);
+  --text-color-secondary: var(--text-muted);
+}
+
+/* ==========================================================================
+   RESET GLOBALS & TYPOGRAPHY
+   ========================================================================== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  /* Fondo global usando la imagen public/fondo.png */
+  background-image: url("/fondo.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Scrollbar Custom (Neon Cyan) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-magenta);
+}
+
+/* Efecto CRT Scanlines (Cyberpunk TV) */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Líneas horizontales muy sutiles */
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 100% 4px; /* Grosor de las scanlines */
+  pointer-events: none; /* Crucial para no bloquear clics */
+  /* z-index por debajo de cualquier overlay de PrimeNG (1200) y del dialog host (1100).
+     Solo debe estar encima del contenido estático de la página. */
+  z-index: 1050;
+}
+
+/* Titulares y Elementos de Marcador */
+h1, h2, h3, h4, h5, h6, .orbitron-font {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 400; /* Reducido para que el glow haga el efecto "Bold" */
+  letter-spacing: 1.5px;
+  margin-top: 0;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   ANIMATIONS & KEYFRAMES
+   ========================================================================== */
+
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in-down 20s ease-out forwards;
+}
+
+@keyframes neon-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow: 0 0 4px #FF00FF, 0 0 11px #FF00FF, 0 0 19px #FF00FF;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+  }
+}
+
+/* ==========================================================================
+   UTILITY CLASSES (NEON & GLOW ARMORY)
+   ========================================================================== */
+
+.glow-cyan {
+  box-shadow: 0 0 5px var(--neon-cyan), 
+              inset 0 0 5px var(--neon-cyan);
+  border: 2px solid var(--neon-cyan);
+}
+
+.text-glow-magenta {
+  text-shadow: 0 0 8px var(--neon-magenta);
+  color: var(--neon-magenta);
+  animation: neon-flicker 20s infinite alternate; /* Applying flicker */
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 8px var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+
+
+/* ==========================================================================
+   BOOTSTRAP UTILITIES OVERRIDES (NEON CYBERPUNK THEME)
+   Bootstrap carga bootstrap-utilities.min.css antes que este fichero.
+   Algunas utilidades usan !important con colores que no contrastan sobre
+   el fondo oscuro del proyecto — se corrigen aquí.
+   ========================================================================== */
+
+.text-muted {
+  color: var(--text-muted) !important; /* Bootstrap define #6c757d !important — ilegible sobre --bg-dark */
+}
+
+/* ==========================================================================
+   FILEPOND GLOBAL OVERRIDES (NEON CYBERPUNK THEME)
+   ========================================================================== */
+
+.filepond--root {
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 0;
+}
+
+.filepond--panel-root {
+  background-color: rgba(18, 22, 45, 0.7) !important;
+  border: 1px dashed var(--neon-cyan) !important;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.filepond--drop-label {
+  color: var(--text-muted) !important;
+}
+
+.filepond--drop-label label {
+  cursor: pointer;
+}
+
+.filepond--item-panel {
+  background-color: rgba(0, 229, 255, 0.15) !important;
+  border: 1px solid var(--neon-cyan);
+}
+
+.filepond--file-action-button {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: var(--text-main) !important;
+}
+
+.filepond--file-action-button:hover {
+  background-color: var(--neon-magenta) !important;
+  box-shadow: 0 0 10px var(--neon-magenta);
+}
+
+.filepond--image-preview-overlay-success {
+  color: var(--neon-cyan) !important;
+}
+
+/* ==========================================================================
+   PRIMENG GLOBAL OVERLAY OVERRIDES
+   Los paneles que usan appendTo="body" (p-select, p-dropdown, p-autocomplete, etc.)
+   se renderizan directamente en el <body>, fuera del stacking context de cualquier
+   componente. Deben tener un z-index superior al del dialog-host (1100) para que
+   sean visibles cuando se usan dentro de un modal.
+   ========================================================================== */
+
+.p-select-overlay,
+.p-dropdown-panel,
+.p-overlay,
+.p-overlaypanel,
+.p-multiselect-panel {
+  z-index: 1200 !important;
+}
+

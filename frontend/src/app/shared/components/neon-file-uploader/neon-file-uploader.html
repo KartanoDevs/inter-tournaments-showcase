@@ -1,0 +1,9 @@
+<!-- Wrapper seguro que garantiza el espacio y el diseño -->
+<div class="neon-uploader-wrapper w-full" [ngClass]="marginClass">
+    <file-pond 
+        [options]="pondOptions"
+        [files]="pondFiles"
+        (onaddfile)="onAdd($event)" 
+        (onremovefile)="onRemove($event)">
+    </file-pond>
+</div>

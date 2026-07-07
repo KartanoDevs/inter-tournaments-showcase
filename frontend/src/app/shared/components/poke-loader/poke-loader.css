@@ -1,0 +1,164 @@
+/* Overlay que cubre toda la pantalla */
+.poke-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.3s ease forwards;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* --- Contenedor Principal --- */
+.poke-loader {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  filter: drop-shadow(0 0 8px var(--neon-magenta)) drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+/* --- El Núcleo de Energía Interno --- */
+.energy-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 25px 15px var(--neon-cyan), 0 0 50px 25px var(--neon-magenta);
+  opacity: 0;
+  animation: core-flash 4s infinite;
+}
+
+/* --- Estructura compartida para las mitades --- */
+.poke-half {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid #121212;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom, var(--neon-magenta) 50%, var(--neon-cyan) 50%);
+  overflow: hidden;
+}
+
+/* Las costuras curvas de Vóley */
+.v-seam {
+  position: absolute;
+  width: 60px;
+  height: 120px;
+  border: 4px solid #121212;
+  border-radius: 50%;
+  top: -15px;
+}
+.v-seam.left { left: -35px; }
+.v-seam.right { right: -35px; }
+
+/* El cinturón negro horizontal */
+.poke-half::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  right: -5px;
+  height: 6px;
+  background: #121212;
+  transform: translateY(-50%);
+}
+
+/* --- Divisiones con Clip-Path --- */
+.top-half {
+  clip-path: inset(0 0 50% 0);
+  animation: glitch-top 4s infinite;
+}
+
+.bottom-half {
+  clip-path: inset(50% 0 0 0);
+  animation: glitch-bottom 4s infinite;
+}
+
+/* --- El Botón Central --- */
+.poke-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  background: #121212;
+  border-radius: 50%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: btn-glitch 4s infinite;
+}
+
+/* La luz led del botón */
+.poke-btn::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--neon-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon-cyan);
+  animation: btn-light 4s infinite;
+}
+
+/* =========================================
+   LAS ANIMACIONES KEYFRAMES (SECUENCIA)
+   ========================================= */
+
+@keyframes glitch-top {
+  0%, 15% { transform: translate(0, 0); }
+  16% { transform: translate(-3px, 1px); }
+  18% { transform: translate(4px, -2px); }
+  20% { transform: translate(-2px, 0); }
+  22% { transform: translate(0, 0); }
+  30%, 70% { transform: translateY(-18px); }
+  75%, 100% { transform: translateY(0); }
+}
+
+@keyframes glitch-bottom {
+  0%, 15% { transform: translate(0, 0); }
+  16% { transform: translate(3px, -1px); }
+  18% { transform: translate(-4px, 2px); }
+  20% { transform: translate(2px, 0); }
+  22% { transform: translate(0, 0); }
+  30%, 70% { transform: translateY(18px); }
+  75%, 100% { transform: translateY(0); }
+}
+
+@keyframes btn-glitch {
+  0%, 15% { transform: translate(-50%, -50%); }
+  16% { transform: translate(calc(-50% - 3px), calc(-50% + 1px)); }
+  18% { transform: translate(calc(-50% + 4px), calc(-50% - 2px)); }
+  22% { transform: translate(-50%, -50%); }
+  30%, 70% { transform: translate(-50%, calc(-50% - 18px)); }
+  75%, 100% { transform: translate(-50%, -50%); }
+}
+
+@keyframes btn-light {
+  0%, 25% { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+  30%, 70% { background: var(--neon-magenta); box-shadow: 0 0 15px var(--neon-magenta); }
+  75%, 100% { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+}
+
+@keyframes core-flash {
+  0%, 25% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  32%, 65% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  66% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  68% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  72%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+}

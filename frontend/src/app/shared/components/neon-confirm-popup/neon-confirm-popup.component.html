@@ -1,0 +1,27 @@
+@if (visible) {
+  <div class="ncp-overlay" (click)="onOverlayClick($event)">
+    <div class="ncp-card">
+      <div class="ncp-header">
+        <span class="ncp-title">{{ title }}</span>
+      </div>
+      <div class="ncp-body">
+        <p class="ncp-message">{{ message }}</p>
+      </div>
+      <div class="ncp-footer">
+        @if (cancelLabel) {
+          <app-neon-button variant="secondary" size="sm" (onClick)="cancel.emit()">
+            {{ cancelLabel }}
+          </app-neon-button>
+        }
+        @if (extraLabel) {
+        <app-neon-button [variant]="extraVariant" size="sm" (onClick)="extra.emit()">
+          {{ extraLabel }}
+        </app-neon-button>
+        }
+        <app-neon-button [variant]="confirmVariant" size="sm" (onClick)="confirm.emit()">
+          {{ confirmLabel }}
+        </app-neon-button>
+      </div>
+    </div>
+  </div>
+}

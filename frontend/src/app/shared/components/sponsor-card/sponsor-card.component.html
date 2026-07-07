@@ -1,0 +1,37 @@
+<div class="sponsor-cyber-card">
+  <!-- Glowing Border Effects -->
+  <div class="glow-edge"></div>
+  
+  <div class="sponsor-content">
+    
+    <!-- Logo Section -->
+    <div class="sponsor-logo-container">
+      <img *ngIf="sponsor.logo" [src]="sponsor.logo" [alt]="sponsor.name" class="sponsor-logo">
+      <div *ngIf="!sponsor.logo" class="sponsor-placeholder">
+        <i class="pi pi-image"></i>
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="sponsor-details">
+      <h3 class="sponsor-name text-glow-cyan">{{ sponsor.name }}</h3>
+      <p *ngIf="sponsor.description" class="sponsor-desc">{{ sponsor.description }}</p>
+    </div>
+
+    <!-- Social Links Section -->
+    <div class="sponsor-links" *ngIf="sponsor.websiteUrl || sponsor.instagramUrl || sponsor.facebookUrl">
+      <hr class="cyber-divider">
+      <div class="link-buttons">
+        <a *ngIf="sponsor.websiteUrl" [href]="sponsor.websiteUrl" target="_blank" class="cyber-btn cyber-btn-web" title="Sitio Web">
+          <i class="pi pi-globe"></i>
+        </a>
+        <a *ngIf="sponsor.instagramUrl" [href]="sponsor.instagramUrl" target="_blank" class="cyber-btn cyber-btn-ig" title="Instagram">
+          <i class="pi pi-instagram"></i>
+        </a>
+        <a *ngIf="sponsor.facebookUrl" [href]="sponsor.facebookUrl" target="_blank" class="cyber-btn cyber-btn-fb" title="Facebook">
+          <i class="pi pi-facebook"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

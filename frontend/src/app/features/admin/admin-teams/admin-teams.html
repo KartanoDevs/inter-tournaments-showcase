@@ -1,0 +1,77 @@
+<div class="card p-4 neon-panel">
+    
+    <p-toast></p-toast>
+
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-glow-cyan m-0">Gestión de Equipos</h3>
+        <p-button (onClick)="openNew()" styleClass="p-button-success">
+            <i class="pi pi-plus mr-2"></i><span>Nuevo Equipo</span>
+        </p-button>
+    </div>
+
+    <p-table [value]="pagedTeams()" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Logo</th>
+                <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                <th>Acrónimo</th>
+                <th>Estado</th>
+                <th class="text-right">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-team>
+            <tr>
+                <td>
+                    <img *ngIf="team.logo" [src]="team.logo | mediaUrl" [alt]="team.name" width="30"
+                        class="rounded-full shadow-md object-cover h-8" />
+                    <div *ngIf="!team.logo" class="w-8 h-8 flex justify-center items-center bg-gray-200 rounded-full">
+                        <i class="pi pi-shield text-gray-400"></i>
+                    </div>
+                </td>
+                <td class="font-bold">{{team.name}}</td>
+                <td>{{team.shortName}}</td>
+                <td>
+                    <span [class]="team.isActive ? 'text-green-500 font-bold' : 'text-red-500 font-bold'">
+                        {{ team.isActive ? 'ACTIVO' : 'INACTIVO' }}
+                    </span>
+                </td>
+                <td class="text-right">
+                    <p-button class="mr-2" styleClass="p-button-outlined p-button-sm p-button-success" (onClick)="openAddPlayer(team)"
+                        pTooltip="Ver / Añadir jugadores del equipo">
+                        <i class="pi pi-users"></i>
+                    </p-button>
+                    <p-button class="mr-2" styleClass="p-button-outlined p-button-sm p-button-info" (onClick)="openAddPlayer(team)"
+                        pTooltip="Añadir jugador rápidamente">
+                        <i class="pi pi-user-plus"></i>
+                    </p-button>
+                    <p-button styleClass="p-button-rounded p-button-text p-button-warning" (onClick)="editTeam(team)">
+                        <i class="pi pi-pencil"></i>
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <app-neon-paginator
+        [totalRecords]="teams().length"
+        [first]="paginatorFirst()"
+        [rows]="paginatorRows()"
+        (pageChange)="onPageChange($event)">
+    </app-neon-paginator>
+
+    <!-- Template del formulario de equipo — se proyecta en el DialogHostComponent global -->
+    <ng-template #teamFormTemplate>
+        <app-dynamic-form [fields]="teamFormFields" [initialData]="currentTeam" submitLabel="Guardar"
+            (formSubmit)="onTeamFormSubmit($event)" (isDirtyChange)="onTeamFormDirty($event)">
+        </app-dynamic-form>
+    </ng-template>
+
+    <!-- Template del sub-componente de jugadores (quick add) — se proyecta en el host global -->
+    <ng-template #playerQuickAddTemplate>
+        <app-admin-players [preSelectedTeamId]="selectedTeamIdForPlayer()"
+            (onSaveComplete)="onPlayerAdded()"></app-admin-players>
+    </ng-template>
+
+    <!-- Modal de confirmación p/ cambios sin guardar (se queda inline, es un sub-modal pequeño) -->
+    <app-unsaved-changes-dialog [(visible)]="unsavedDialogVisible" (confirm)="onUnsavedConfirm($event)">
+    </app-unsaved-changes-dialog>
+</div>

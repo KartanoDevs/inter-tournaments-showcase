@@ -1,0 +1,15 @@
+@if (dialogService.activeDialog(); as state) {
+  <div class="dialog-host-overlay" (click)="onBackdropClick()">
+    <div class="dialog-host-box" (click)="$event.stopPropagation()">
+      <div class="dialog-host-header">
+        <h2 class="dialog-title text-glow-cyan">{{ state.config.title }}</h2>
+        <button class="cyberpunk-close-btn" (click)="dialogService.close()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="dialog-host-body">
+        <ng-container *ngTemplateOutlet="state.template"></ng-container>
+      </div>
+    </div>
+  </div>
+}

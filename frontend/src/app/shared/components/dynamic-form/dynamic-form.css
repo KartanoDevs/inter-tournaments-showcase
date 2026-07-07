@@ -1,0 +1,133 @@
+.vongola-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+/* Responsividad para desktop/tablet: 2 columnas */
+@media (min-width: 600px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vongola-label {
+  color: var(--text-main);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+}
+
+.required-mark {
+  color: var(--neon-magenta);
+  margin-left: 2px;
+  text-shadow: 0 0 5px var(--neon-magenta);
+}
+
+::ng-deep .vongola-input {
+  background: rgba(11, 12, 16, 0.8) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease !important;
+  width: 100%;
+}
+
+::ng-deep .vongola-input:focus {
+  border-color: var(--neon-cyan) !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3) !important;
+  outline: none !important;
+}
+
+/* Override para PrimeNG Select */
+::ng-deep .vongola-select {
+  background: rgba(11, 12, 16, 0.8) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+
+::ng-deep .vongola-select:not(.p-disabled):hover {
+  border-color: var(--neon-cyan) !important;
+}
+
+::ng-deep .vongola-select.p-focus {
+  border-color: var(--neon-cyan) !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3) !important;
+}
+
+::ng-deep .vongola-select .p-select-label {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+/* Color Hash Addon */
+::ng-deep .cyberpunk-addon {
+  background: rgba(0, 229, 255, 0.1) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  border-right: none !important;
+  color: var(--neon-cyan) !important;
+}
+
+.color-preview-addon {
+  width: 40px;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  border-left: none !important;
+  border-radius: 0 6px 6px 0 !important;
+  transition: background 0.3s ease;
+}
+
+::ng-deep .vongola-input-number {
+  background: rgba(11, 12, 16, 0.8) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  border-radius: 6px !important;
+  width: 100%;
+}
+
+::ng-deep .vongola-input-number .p-inputnumber-input {
+  background: transparent !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 0.75rem 1rem !important;
+  width: 100%;
+}
+
+::ng-deep .vongola-input-number:focus-within {
+  border-color: var(--neon-cyan) !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3) !important;
+}
+
+/* ToggleSwitch Vongola */
+::ng-deep .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+  background: var(--neon-cyan) !important;
+  box-shadow: 0 0 8px var(--neon-cyan) !important;
+}
+
+.error-msg {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

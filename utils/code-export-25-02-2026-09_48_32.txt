@@ -1,0 +1,102 @@
+title Volleyball League Management System
+
+users [icon: user, color: blue] {
+  id string pk
+  email string
+  password string
+  isActive boolean
+  isDeleted boolean
+  metadata json
+  role RoleType
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+teams [icon: users, color: orange] {
+  id string pk
+  name string
+  shortName string
+  logo string
+  colorMain string
+  colorSec string
+  isActive boolean
+  isDeleted boolean
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+players [icon: activity, color: green] {
+  id string pk
+  firstName string
+  lastName string
+  number smallint
+  position VolleyballPosition
+  heightCm smallint
+  imageUrl string
+  thumbnailUrl string
+  teamId string fk
+  userId string fk
+  isActive boolean
+  isDeleted boolean
+  createdAt timestamp
+  updatedAt timestamp
+}
+sponsors [icon: dollar-sign, color: purple] {
+  
+  id string pk
+  name string
+  description string
+  logo string
+  instagramUrl string
+  facebookUrl string
+  websiteUrl string
+  createdAt timestamp
+  updatedAt timestamp
+}
+events [icon: calendar, color: red] {
+  
+  id string pk
+  name string
+  location string
+  shortDescription string
+  description string
+  eventDate timestamp
+  maxRegistrationDate timestamp
+  image string
+  rules string
+  isActive boolean
+  isDeleted boolean
+  createdAt timestamp
+  updatedAt timestamp
+}
+eventTeams [icon: users, color: yellow] {
+  
+  id string pk
+  name string
+  email string
+  captainPhone string
+  logo string
+  eventId string fk
+  createdAt timestamp
+  updatedAt timestamp
+}
+eventPlayers [icon: user, color: green] {
+  
+  id string pk
+  firstName string
+  lastName string
+  shirtSize string
+  eventTeamId string fk
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+
+
+
+players.teamId > teams.id
+players.userId - users.id
+players.userId > users.id
+eventTeams.eventId > events.id
+eventPlayers.eventTeamId > eventTeams.id

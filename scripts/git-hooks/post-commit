@@ -1,0 +1,9 @@
+#!/bin/sh
+# post-commit hook
+#
+# Tras cada commit, bumpeа las versiones de frontend/package.json y/o backend/package.json
+# según los archivos cambiados y el tipo Conventional Commit, y crea un commit separado.
+#
+# Activado con:  git config core.hooksPath scripts/git-hooks
+
+node "$(git rev-parse --show-toplevel)/scripts/bump-version.mjs" || true

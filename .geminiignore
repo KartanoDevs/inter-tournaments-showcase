@@ -1,0 +1,14 @@
+# ==========================================
+# IGNORAR PARA LA IA / TOKENS
+# ==========================================
+
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Otros builds grandes
+dist/
+backend/dist/
+frontend/dist/
+frontend/.angular/
+.git/

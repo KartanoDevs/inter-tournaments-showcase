@@ -1,0 +1,104 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="vongola-form w-full">
+  <div class="form-grid">
+    @for (field of fields; track field.name) {
+      <div class="field-container" [class.full-width]="field.type === 'file'">
+        <!-- Label -->
+        <label [for]="field.name" class="vongola-label">
+          {{ field.label }}
+          <span *ngIf="field.required" class="required-mark">*</span>
+        </label>
+
+        <!-- Control Rendering -->
+        @switch (field.type) {
+          
+          @case ('text') {
+            <input 
+              pInputText 
+              [id]="field.name" 
+              [formControlName]="field.name" 
+              [placeholder]="field.placeholder || ''"
+              class="vongola-input w-full" 
+            />
+          }
+
+          @case ('color') {
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon cyberpunk-addon">
+                <i class="pi pi-palette"></i>
+              </span>
+              <input 
+                pInputText 
+                [id]="field.name" 
+                [formControlName]="field.name" 
+                type="text" 
+                class="vongola-input" 
+                placeholder="#00E5FF" 
+              />
+              <span class="p-inputgroup-addon color-preview-addon" [style.background]="form.get(field.name)?.value"></span>
+            </div>
+          }
+
+          @case ('number') {
+            <p-inputNumber 
+              [id]="field.name" 
+              [formControlName]="field.name" 
+              [placeholder]="field.placeholder || ''"
+              styleClass="vongola-input-number w-full" 
+            ></p-inputNumber>
+          }
+
+          @case ('toggle') {
+            <div class="flex items-center gap-2 mt-2">
+              <p-toggleswitch 
+                [id]="field.name" 
+                [formControlName]="field.name" 
+              ></p-toggleswitch>
+              <span class="text-gray-400 text-sm italic">{{ form.get(field.name)?.value ? 'Sí' : 'No' }}</span>
+            </div>
+          }
+
+          @case ('select') {
+            <p-select 
+              [id]="field.name" 
+              [formControlName]="field.name" 
+              [options]="field.options || []" 
+              optionLabel="label" 
+              optionValue="value"
+              [placeholder]="field.placeholder || 'Selecciona...'"
+              styleClass="vongola-select w-full"
+              appendTo="body" 
+            ></p-select>
+          }
+
+          @case ('file') {
+            <div class="file-uploader-wrapper w-full">
+              <app-neon-file-uploader
+                [initialImageUrl]="field.initialImageUrl || null"
+                [options]="{
+                  imagePreviewHeight: field.fileConfig?.previewHeight || 120,
+                  stylePanelLayout: 'compact rectangle',
+                  acceptedFileTypes: field.fileConfig?.accept || 'image/*'
+                }"
+                (fileAdded)="onFileAdded($event, field.name)"
+                (fileRemoved)="onFileRemoved(field.name)">
+              </app-neon-file-uploader>
+            </div>
+          }
+        }
+
+        <!-- Error messages -->
+        @if (form.get(field.name)?.invalid && (form.get(field.name)?.dirty || form.get(field.name)?.touched)) {
+          <small class="error-msg text-glow-magenta mt-1 block">
+            Este campo es requerido o tiene formato inválido.
+          </small>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="form-actions">
+    <p-button type="submit" styleClass="p-button-success" [style]="{ width: 'auto', minWidth: '150px' }">
+      <i class="pi pi-check mr-2"></i><span>{{ submitLabel }}</span>
+    </p-button>
+  </div>
+</form>

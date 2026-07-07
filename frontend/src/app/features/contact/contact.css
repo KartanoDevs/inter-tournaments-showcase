@@ -1,0 +1,98 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.contact-card {
+  background-color: var(--bg-card);
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: center;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-icon {
+  font-size: 2rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+  margin-bottom: 0.5rem;
+}
+
+.info-section h3 {
+  color: var(--text-main);
+  margin: 0;
+}
+
+.info-section p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.social-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  border: 1px solid var(--neon-magenta);
+  color: var(--neon-magenta);
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+}
+
+.social-btn:hover {
+  background: rgba(255, 0, 255, 0.2);
+  box-shadow: 0 0 15px var(--neon-magenta);
+  text-shadow: 0 0 5px var(--neon-magenta);
+  color: #fff;
+}
+
+.sponsors-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.sponsors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.no-sponsors {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 2rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}

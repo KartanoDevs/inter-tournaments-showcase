@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+*.md
+ts_errors*.txt
+clear-db.ts
+seed-schema.ts
+public/uploads

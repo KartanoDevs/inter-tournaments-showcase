@@ -1,0 +1,25 @@
+<p-dialog 
+  [visible]="visible" 
+  (visibleChange)="visibleChange.emit($event)" 
+  [style]="{width: width}" 
+  [header]="header" 
+  [modal]="modal" 
+  [maximizable]="maximizable" 
+  [draggable]="false"
+  [resizable]="false"
+  [maskStyleClass]="blurBackdrop ? 'neon-blur-mask' : ''"
+  styleClass="neon-dialog-panel" 
+  class="p-fluid">
+
+    <ng-template pTemplate="content">
+        <div class="neon-dialog-content">
+            <ng-content></ng-content>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer" *ngIf="hasFooter">
+        <div class="neon-dialog-footer border-t border-gray-700/50 pt-3">
+            <ng-content select="[dialog-footer]"></ng-content>
+        </div>
+    </ng-template>
+</p-dialog>

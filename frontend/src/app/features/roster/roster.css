@@ -1,0 +1,195 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.neon-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+  text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+/* Imagen miniatura en tarjeta */
+.thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+
+/* Estado de carga */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   POPUP / LIGHTBOX DE JUGADOR COMPLETO
+   Animación de entrada: glitch scan-line desde abajo
+   ============================================================ */
+
+.player-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.5s ease forwards;
+  cursor: pointer;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.player-popup {
+  position: relative;
+  border: 1px solid var(--neon-cyan);
+  border-radius: 12px;
+  box-shadow:
+    0 0 25px rgba(0, 229, 255, 0.35),
+    0 0 60px rgba(0, 229, 255, 0.12),
+    inset 0 0 20px rgba(0, 229, 255, 0.05);
+  max-width: 380px;
+  width: 90vw;
+  overflow: hidden;
+  cursor: default;
+  animation: popupScanSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popupScanSlide {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.94);
+    box-shadow: 0 0 0 rgba(0, 229, 255, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 0 25px rgba(0, 229, 255, 0.35),
+      0 0 60px rgba(0, 229, 255, 0.12);
+  }
+}
+
+.popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: var(--neon-cyan);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.popup-close:hover {
+  background: rgba(0, 229, 255, 0.15);
+  box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.popup-image-wrapper {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.popup-full-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.popup-no-image {
+  font-size: 5rem;
+  color: var(--text-muted);
+  opacity: 0.3;
+}
+
+.popup-info {
+  padding: 1.25rem 1.5rem 1.75rem;
+  text-align: center;
+  position: relative;
+  /* Gradiente semitransparente: backdrop-filter no funciona dentro de overflow:hidden */
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 12, 20, 0.55) 0%,
+    rgba(10, 12, 20, 0.75) 100%
+  );
+  border-top: 1px solid rgba(0, 229, 255, 0.12);
+}
+
+.popup-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.popup-name {
+  font-size: 1.4rem;
+  margin: 0.25rem 0;
+}
+
+.popup-position {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--neon-cyan);
+  background: rgba(0, 229, 255, 0.1);
+  padding: 3px 10px;
+  border-radius: 4px;
+}

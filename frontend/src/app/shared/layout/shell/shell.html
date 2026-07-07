@@ -1,0 +1,19 @@
+<div class="app-shell">
+  <app-rotate-device></app-rotate-device>
+  <!-- Header Minimalista -->
+  @if (!shouldHideHeader()) {
+    <header class="app-header">
+      <div class="logo-container">
+        <img src="\icons\icon-128.png" alt="C.V. INTER Logo" class="club-logo">
+      </div>
+    </header>
+  }
+  
+  <!-- Contenido Dinámico con espaciado para el header y footer -->
+  <main class="app-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Navegación Flotante -->
+  <app-navbar-bottom></app-navbar-bottom>
+</div>

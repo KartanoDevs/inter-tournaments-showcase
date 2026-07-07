@@ -1,0 +1,71 @@
+<div class="card p-4 neon-panel">
+    
+    <p-toast></p-toast>
+
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-glow-cyan m-0">Gestión de Jugadores</h3>
+        <p-button (onClick)="openNew()" styleClass="p-button-success" *ngIf="!preSelectedTeamId">
+            <i class="pi pi-plus mr-2"></i><span>Nuevo Jugador</span>
+        </p-button>
+    </div>
+
+    <p-table [value]="pagedPlayers()" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Foto</th>
+                <th pSortableColumn="firstName">Nombre <p-sortIcon field="firstName"></p-sortIcon></th>
+                <th pSortableColumn="lastName">Apellidos <p-sortIcon field="lastName"></p-sortIcon></th>
+                <th pSortableColumn="nickname">Apodo <p-sortIcon field="nickname"></p-sortIcon></th>
+                <th>Número</th>
+                <th>Posición</th>
+                <th>Equipo</th>
+                <th>Estado</th>
+                <th class="text-right">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-player>
+            <tr>
+                <td>
+                    <img *ngIf="player.thumbnailUrl" [src]="player.thumbnailUrl | mediaUrl" [alt]="player.firstName" width="30"
+                        class="rounded-full shadow-md object-cover h-8" />
+                    <div *ngIf="!player.thumbnailUrl" class="w-8 h-8 flex justify-center items-center bg-gray-200 rounded-full">
+                        <i class="pi pi-user text-gray-400"></i>
+                    </div>
+                </td>
+                <td class="font-bold">{{player.firstName}}</td>
+                <td class="font-bold">{{player.lastName}}</td>
+                <td class="text-neon-magenta">{{player.nickname || '-'}}</td>
+                <td>{{player.number || '-'}}</td>
+                <td>{{player.position | positionLabel : getTeamGender(player.teamId)}}</td>
+                <td class="text-cyan-400">{{getTeamName(player.teamId)}}</td>
+                <td>
+                    <span [class]="player.isActive ? 'text-green-500 font-bold' : 'text-red-500 font-bold'">
+                        {{ player.isActive ? 'ACTIVO' : 'INACTIVO' }}
+                    </span>
+                </td>
+                <td class="text-right">
+                    <p-button styleClass="p-button-rounded p-button-text p-button-warning" (onClick)="editPlayer(player)">
+                        <i class="pi pi-pencil"></i>
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <app-neon-paginator
+        [totalRecords]="players().length"
+        [first]="paginatorFirst()"
+        [rows]="paginatorRows()"
+        (pageChange)="onPageChange($event)">
+    </app-neon-paginator>
+
+    <!-- Template del formulario de jugador — se proyecta en el DialogHostComponent global -->
+    <ng-template #playerFormTemplate>
+        <app-dynamic-form [fields]="playerFormFields()" [initialData]="currentPlayer" submitLabel="Guardar"
+            (formSubmit)="onPlayerFormSubmit($event)" (isDirtyChange)="onPlayerFormDirty($event)">
+        </app-dynamic-form>
+    </ng-template>
+
+    <!-- Modal de confirmación p/ cambios sin guardar -->
+    <app-unsaved-changes-dialog [(visible)]="unsavedDialogVisible" (confirm)="onUnsavedConfirm($event)">
+    </app-unsaved-changes-dialog>
+</div>

@@ -1,0 +1,120 @@
+<div class="tournaments-page">
+
+  <!-- ===================== LISTADO ===================== -->
+  @if (!selectedTournament()) {
+    <h2 class="page-title orbitron-font text-glow-cyan">Torneos</h2>
+
+    @if (isLoading()) {
+      <div class="loading-row"><span class="text-muted">Cargando torneos...</span></div>
+    } @else if (tournaments().length === 0) {
+      <p class="text-muted text-center">No hay torneos activos actualmente.</p>
+    } @else {
+      <div class="tournament-cards">
+        @for (t of tournaments(); track t.id) {
+          <div class="tournament-card neon-card" (click)="openTournament(t)" tabindex="0" (keydown.enter)="openTournament(t)">
+            <h3 class="orbitron-font">{{ t.name }}</h3>
+            @if (t.date) {
+              <p class="text-muted" style="font-size:0.85rem">{{ t.date | date:'EEEE, d MMMM yyyy':'':'es' }}</p>
+            }
+            <span class="enter-hint">Ver resultados →</span>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- ===================== DETALLE ===================== -->
+  @if (selectedTournament(); as t) {
+    @if (showBackButton()) {
+      <div class="back-row">
+        <button class="back-btn" (click)="backToList()">← Volver</button>
+      </div>
+    }
+
+    <div class="tournament-header">
+      <h2 class="orbitron-font text-glow-cyan">{{ t.name }}</h2>
+      @if (t.date) {
+        <span class="tournament-date text-muted">{{ t.date | date:'d MMMM yyyy':'':'es' }}</span>
+      }
+    </div>
+
+    @if (detailLoading()) {
+      <p class="text-muted text-center">Cargando resultados...</p>
+    } @else if (!hasDrawn()) {
+      <p class="text-muted text-center">El torneo aún no ha comenzado.</p>
+    } @else {
+
+      <!-- ========== 1) FASE ELIMINATORIA ========== -->
+      @if (hasKnockout()) {
+        <section class="page-section">
+          <app-tournaments-knockout [matches]="knockoutMatches()" />
+        </section>
+      }
+
+      <!-- ========== 2) PRÓXIMOS ENFRENTAMIENTOS ========== -->
+      @let upcoming = upcomingGroupMatches();
+      @if (upcoming.length > 0) {
+        <section class="page-section">
+          <h3 class="section-title orbitron-font text-glow-cyan">Próximos enfrentamientos</h3>
+          <div class="upcoming-list">
+            @for (m of upcoming; track m.id) {
+              <div class="upcoming-row">
+                <span class="upcoming-group">Grupo {{ m.group }}</span>
+                <div class="upcoming-teams">
+                  <span class="upcoming-team upcoming-team-home">{{ m.homeTeam.name }}</span>
+                  <span class="vs-badge">VS</span>
+                  <span class="upcoming-team upcoming-team-away">{{ m.awayTeam.name }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ========== 3) FASE DE GRUPOS (TABS) ========== -->
+      <section class="page-section">
+        <h3 class="section-title orbitron-font text-glow-cyan">Fase de grupos</h3>
+
+        <div class="group-tabs" role="tablist">
+          @for (grp of ['A', 'B']; track grp) {
+            <button
+              type="button"
+              role="tab"
+              class="group-tab"
+              [class.active]="activeGroupTab() === grp"
+              [attr.aria-selected]="activeGroupTab() === grp"
+              (click)="setActiveTab($any(grp))">
+              Grupo {{ grp }}
+            </button>
+          }
+        </div>
+
+        @let activeGrp = activeGroupTab();
+        @let played = playedMatchesForGroup(activeGrp);
+        @let rows = standingsForGroup(activeGrp);
+
+        <div class="tab-panel" role="tabpanel">
+          <!-- Resultados -->
+          <div class="subsection">
+            <h4 class="subsection-title">Resultados</h4>
+            @if (played.length === 0) {
+              <p class="text-muted text-center small">Todavía no hay partidos jugados en este grupo.</p>
+            } @else {
+              <div class="match-list">
+                @for (match of played; track match.id) {
+                  <app-tournaments-match-row [match]="match" />
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Clasificación -->
+          <div class="subsection">
+            <h4 class="subsection-title">Clasificación</h4>
+            <app-tournaments-standings [rows]="rows" />
+          </div>
+        </div>
+      </section>
+    }
+  }
+</div>

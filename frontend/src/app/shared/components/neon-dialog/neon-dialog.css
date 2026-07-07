@@ -1,0 +1,52 @@
+/* Difuminar fondo (Backdrop Blur) condicional */
+::ng-deep .neon-blur-mask {
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  background-color: rgba(9, 11, 20, 0.6) !important;
+}
+
+::ng-deep .neon-dialog-panel {
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 9px;
+  backdrop-filter: blur(10px);
+  background-color: transparent !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Independiente: Flotante y del ancho de su propio contenido */
+::ng-deep .neon-dialog-panel .p-dialog-header {
+  background-color: var(--bg-card); /* Opaco para tapar el borde que cruza debajo */
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+  border-radius: 8px;
+  
+  /* Logia independiente: shrink-to-fit y centrado flotando */
+  display: flex !important;
+  width: max-content;
+  max-width: 90%;
+  align-self: center;
+  margin-top: -24px;
+  margin-bottom: 5px;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+  position: relative;
+  z-index: 10;
+}
+
+::ng-deep .neon-dialog-panel .p-dialog-content {
+  background-color: rgba(18, 22, 45, 0.95);
+  padding: 1.5rem;
+  border-radius: 8px; /* Redondeamos todo el tapiz ya que el header se desprendió */
+}
+
+::ng-deep .neon-dialog-panel .p-dialog-footer {
+  background-color: rgba(18, 22, 45, 0.95);
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 1rem 1.5rem;
+}
+

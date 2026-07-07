@@ -1,0 +1,30 @@
+<div class="page-container login-container">
+  
+  <div class="login-card glow-cyan">
+    <div class="login-header">
+      <h2 class="text-glow-magenta">Acceso Exclusivo Club Inter</h2>
+      <p class="subtitle">Solo Personal Autorizado</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div *ngIf="errorMsg()" class="error-banner glow-magenta">
+        <i class="pi pi-exclamation-triangle"></i> {{ errorMsg() }}
+      </div>
+
+      <div class="form-group">
+        <label for="email"><i class="pi pi-envelope"></i> Email</label>
+        <input type="email" id="email" formControlName="email" class="neon-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="password"><i class="pi pi-lock"></i> Contraseña</label>
+        <input type="password" id="password" formControlName="password" class="neon-input" placeholder="••••••••" />
+      </div>
+
+      <app-neon-button type="submit" variant="reject" [fullWidth]="true" [disabled]="loginForm.invalid || isLoading()">
+        <i class="pi" [ngClass]="isLoading() ? 'pi-spin pi-spinner' : 'pi-sign-in'"></i>
+        {{ isLoading() ? 'Autenticando...' : 'Autenticar' }}
+      </app-neon-button>
+    </form>
+  </div>
+</div>

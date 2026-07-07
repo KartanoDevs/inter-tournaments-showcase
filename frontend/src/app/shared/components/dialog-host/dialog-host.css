@@ -1,0 +1,96 @@
+/*
+ * CSS del DialogHostComponent.
+ * Este componente vive en app.html (raíz), por lo que position: fixed
+ * siempre es relativo al viewport real, sin stacking context intermedios.
+ */
+
+.dialog-host-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100; /* Por encima del navbar (z-index: 1000) y de cualquier otro elemento */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(9, 11, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+
+.dialog-host-box {
+  background-color: #0b0c10;
+  border: 1px solid var(--neon-cyan);
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.15), inset 0 0 15px rgba(0, 229, 255, 0.05);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  /* overflow visible para no clipear los paneles dropdown (p-select, p-dropdown, etc.)
+     que se renderizan como hijos directos del box antes de saltar al body */
+  overflow: visible;
+  color: var(--text-main);
+  animation: dialog-appear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dialog-host-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  background: rgba(0, 229, 255, 0.05);
+  border-radius: 12px 12px 0 0;
+  flex-shrink: 0; /* El header nunca se encoge */
+}
+
+.dialog-title {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+
+.cyberpunk-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cyberpunk-close-btn:hover {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 8px var(--neon-magenta);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.dialog-host-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  overflow-x: visible; /* Los dropdowns internos no deben ser clipeados horizontalmente */
+  flex: 1 1 auto;
+  min-height: 0; /* Permite que el cuerpo se encoja sin romper el scroll */
+  /* Respetar el max-height que el box ya define */
+  max-height: calc(90vh - 5rem);
+}
+
+/* Scrollbar personalizada */
+.dialog-host-body::-webkit-scrollbar { width: 6px; }
+.dialog-host-body::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+.dialog-host-body::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 4px; }
+
+@keyframes dialog-appear {
+  0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+

@@ -1,0 +1,512 @@
+<div class="card p-4 neon-panel">
+  <p-toast></p-toast>
+
+  <!-- ===================== LISTADO ===================== -->
+  @if (!selectedTournament()) {
+    <div class="list-header mb-4">
+      <h3 class="text-glow-cyan m-0 orbitron-font">Torneos</h3>
+      <p-button (onClick)="openNew()" styleClass="p-button-success" [disabled]="!canCreateTournament()">
+        <i class="pi pi-plus mr-2"></i><span>Nuevo Torneo</span>
+      </p-button>
+    </div>
+
+    <p-table [value]="tournaments()" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-t>
+        <tr>
+          <td class="font-bold">{{ t.name }}</td>
+          <td>{{ t.date ? (t.date | date:'dd/MM/yyyy') : '—' }}</td>
+          <td><span class="status-badge">{{ tournamentStatus(t) }}</span></td>
+          <td class="text-right">
+            <p-button styleClass="p-button-outlined p-button-sm p-button-success mr-2"
+              pTooltip="Gestionar torneo" (onClick)="openDetail(t)">
+              <i class="pi pi-file-edit"></i>
+            </p-button>
+            <p-button styleClass="p-button-rounded p-button-text p-button-warning mr-2"
+              pTooltip="Editar datos" (onClick)="editTournament(t)">
+              <i class="pi pi-pencil"></i>
+            </p-button>
+            <p-button styleClass="p-button-rounded p-button-text p-button-danger"
+              pTooltip="Eliminar" (onClick)="deleteTournament(t)">
+              <i class="pi pi-trash"></i>
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td colspan="4" class="text-center text-muted py-4">No hay torneos. Crea el primero.</td></tr>
+      </ng-template>
+    </p-table>
+  }
+
+  <!-- ===================== DETALLE ===================== -->
+  @if (selectedTournament(); as t) {
+    <div class="detail-header mb-4">
+      <p-button styleClass="p-button-text p-button-sm mr-3" (onClick)="backToList()">
+        <i class="pi pi-arrow-left mr-1"></i>Volver
+      </p-button>
+      <h3 class="text-glow-cyan m-0 orbitron-font inline-block">{{ t.name }}</h3>
+      @if (t.date) {
+        <span class="ml-3 text-muted" style="font-size: 0.85rem">{{ t.date | date:'dd/MM/yyyy' }}</span>
+      }
+    </div>
+
+    <!-- == FASE PRE-SORTEO == -->
+    @if (!hasDrawn()) {
+      <div class="pre-draw-section">
+        <h4 class="text-glow-cyan mb-3">Equipos inscritos ({{ t.teams.length }})</h4>
+
+        <!-- Añadir equipo -->
+        <div class="add-team-row mb-3">
+          <input
+            pInputText
+            type="text"
+            class="neon-input"
+            placeholder="Nombre del equipo..."
+            [ngModel]="newTeamName()"
+            (ngModelChange)="newTeamName.set($event)"
+            (keydown)="onTeamNameKeydown($event)"
+            [disabled]="addingTeam()"
+          />
+          <p-button styleClass="p-button-success ml-2" [disabled]="!newTeamName().trim() || addingTeam()" (onClick)="addTeam()">
+            <i class="pi pi-plus mr-1"></i>Añadir
+          </p-button>
+        </div>
+
+        <!-- Lista de equipos -->
+        <div class="teams-list mb-4">
+          @for (team of t.teams; track team.id) {
+            <div class="team-chip">
+              <span>{{ team.name }}</span>
+              <button class="remove-btn" (click)="removeTeam(team)" title="Eliminar">✕</button>
+            </div>
+          }
+          @if (t.teams.length === 0) {
+            <p class="text-muted">Ningún equipo añadido todavía.</p>
+          }
+        </div>
+
+        <!-- Botón sortear -->
+        <p-button
+          [disabled]="t.teams.length < 4 || sortingInProgress()"
+          (onClick)="draw()"
+          styleClass="p-button-lg draw-btn"
+        >
+          <i class="pi pi-random mr-2"></i>
+          {{ sortingInProgress() ? 'Sorteando...' : 'SORTEAR Y GENERAR PARTIDOS' }}
+        </p-button>
+        @if (t.teams.length < 4) {
+          <p class="text-muted mt-2" style="font-size:0.8rem">Se necesitan al menos 4 equipos.</p>
+        }
+      </div>
+    }
+
+    <!-- == FASE POST-SORTEO == -->
+    @if (hasDrawn()) {
+      <div class="post-draw-section">
+
+        <!-- Botón re-sortear -->
+        @if (!hasPlayedMatches()) {
+          <div class="mb-4">
+            <p-button styleClass="cyberpunk-danger-btn p-button-sm" (onClick)="confirmUndo()">
+              <i class="pi pi-refresh mr-2"></i>Re-sortear (borra partidos actuales)
+            </p-button>
+          </div>
+        }
+
+        <!-- Grupos A y B lado a lado -->
+        <div class="groups-grid mb-5">
+          @for (grp of ['A', 'B']; track grp) {
+            <div class="group-card neon-panel p-3">
+              <h4 class="text-glow-magenta orbitron-font mb-3">Grupo {{ grp }}</h4>
+              @for (team of teamsForGroup($any(grp)); track team.id) {
+                <div class="group-team-row">
+                  <span class="draw-order">{{ team.drawOrder }}</span>
+                  <span>{{ team.name }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Partidos de liga por grupo -->
+        @for (grp of ['A', 'B']; track grp) {
+          @let pending = pendingMatchesForGroup($any(grp));
+          @let played = playedMatchesForGroup($any(grp));
+          <div class="match-list-section mb-5">
+            <h4 class="text-glow-cyan orbitron-font mb-3">Grupo {{ grp }}</h4>
+
+            @if (pending.length > 0) {
+              <p class="match-subsection-label">Próximos ({{ pending.length }})</p>
+              <div class="match-list mb-3">
+                @for (match of pending; track match.id) {
+                  <app-match-row
+                    [match]="match"
+                    [dirty]="hasUnsavedScore(match.id)"
+                    [editingHome]="getEditingScore(match.id, true)"
+                    [editingAway]="getEditingScore(match.id, false)"
+                    (homeChange)="onScoreChange(match, match.homeTeamId, $event)"
+                    (awayChange)="onScoreChange(match, match.awayTeamId, $event)"
+                  />
+                }
+              </div>
+            }
+
+            @if (played.length > 0) {
+              <p class="match-subsection-label played-label">Jugados ({{ played.length }})</p>
+              <div class="match-list">
+                @for (match of played; track match.id) {
+                  <app-match-row
+                    [match]="match"
+                    [dirty]="hasUnsavedScore(match.id)"
+                    [editingHome]="getEditingScore(match.id, true)"
+                    [editingAway]="getEditingScore(match.id, false)"
+                    (homeChange)="onScoreChange(match, match.homeTeamId, $event)"
+                    (awayChange)="onScoreChange(match, match.awayTeamId, $event)"
+                  />
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Botón guardar cambios (liga) -->
+        @if (hasPendingScores()) {
+          <div class="save-scores-row">
+            <p-button
+              styleClass="save-scores-btn"
+              [disabled]="savingScores()"
+              (onClick)="saveAllScores()"
+            >
+              <i class="pi pi-save mr-2"></i>
+              {{ savingScores() ? 'Guardando...' : 'Guardar cambios' }}
+            </p-button>
+          </div>
+        }
+
+        <!-- Horarios imprimibles por grupo -->
+        <div class="schedule-buttons-row mb-5">
+          <p-button
+            styleClass="p-button-outlined p-button-sm mr-2"
+            (onClick)="openSchedule('A')"
+            pTooltip="Generar documento imprimible de los partidos del Grupo A">
+            <i class="pi pi-print mr-2"></i>Partidos Grupo A
+          </p-button>
+          <p-button
+            styleClass="p-button-outlined p-button-sm"
+            (onClick)="openSchedule('B')"
+            pTooltip="Generar documento imprimible de los partidos del Grupo B">
+            <i class="pi pi-print mr-2"></i>Partidos Grupo B
+          </p-button>
+        </div>
+
+        <!-- Botón generar fase eliminatoria -->
+        @if (allGroupMatchesPlayed() && !hasKnockout()) {
+          <div class="knockout-trigger-section mb-5">
+            <p-button
+              styleClass="knockout-btn"
+              [disabled]="!canGenerateKnockout() || generatingKnockout()"
+              (onClick)="generateKnockout()"
+            >
+              <i class="pi pi-bolt mr-2"></i>
+              {{ generatingKnockout() ? 'Generando...' : 'Generar fase eliminatoria' }}
+            </p-button>
+            @if (!canGenerateKnockout()) {
+              <p class="text-muted mt-2" style="font-size:0.85rem">
+                La fase eliminatoria solo está soportada para torneos de 8 o 10 equipos.
+              </p>
+            }
+          </div>
+        }
+
+        <!-- Fase eliminatoria -->
+        @if (hasKnockout()) {
+          <div class="bracket-section mb-5">
+            <h3 class="text-glow-magenta orbitron-font mb-4">Fase eliminatoria</h3>
+
+            @let quarters = matchesByPhase('QF');
+            @if (quarters.length > 0) {
+              <h4 class="text-glow-cyan orbitron-font mb-3">Cuartos de final</h4>
+              <div class="match-list mb-4">
+                @for (match of quarters; track match.id) {
+                  <app-match-row
+                    [match]="match"
+                    [dirty]="hasUnsavedScore(match.id)"
+                    [editingHome]="getEditingScore(match.id, true)"
+                    [editingAway]="getEditingScore(match.id, false)"
+                    (homeChange)="onScoreChange(match, match.homeTeamId, $event)"
+                    (awayChange)="onScoreChange(match, match.awayTeamId, $event)"
+                  />
+                }
+              </div>
+            }
+
+            @let semis = matchesByPhase('SF');
+            @if (semis.length > 0) {
+              <h4 class="text-glow-cyan orbitron-font mb-3 mt-4">Semifinales</h4>
+              <div class="match-list mb-4">
+                @for (match of semis; track match.id) {
+                  <app-match-row
+                    [match]="match"
+                    [dirty]="hasUnsavedScore(match.id)"
+                    [editingHome]="getEditingScore(match.id, true)"
+                    [editingAway]="getEditingScore(match.id, false)"
+                    (homeChange)="onScoreChange(match, match.homeTeamId, $event)"
+                    (awayChange)="onScoreChange(match, match.awayTeamId, $event)"
+                  />
+                }
+              </div>
+            }
+
+            @let third = matchesByPhase('THIRD');
+            @if (third.length > 0) {
+              <h4 class="text-glow-cyan orbitron-font mb-3 mt-4">3º y 4º puesto</h4>
+              <div class="match-list mb-4">
+                @for (match of third; track match.id) {
+                  <app-match-row
+                    [match]="match"
+                    [dirty]="hasUnsavedScore(match.id)"
+                    [editingHome]="getEditingScore(match.id, true)"
+                    [editingAway]="getEditingScore(match.id, false)"
+                    (homeChange)="onScoreChange(match, match.homeTeamId, $event)"
+                    (awayChange)="onScoreChange(match, match.awayTeamId, $event)"
+                  />
+                }
+              </div>
+            }
+
+            @let final = matchesByPhase('FINAL');
+            @if (final.length > 0) {
+              <h4 class="text-glow-magenta orbitron-font mb-3 mt-4">Final</h4>
+              <div class="match-list mb-4">
+                @for (match of final; track match.id) {
+                  <app-match-row
+                    [match]="match"
+                    [dirty]="hasUnsavedScore(match.id)"
+                    [editingHome]="getEditingScore(match.id, true)"
+                    [editingAway]="getEditingScore(match.id, false)"
+                    (homeChange)="onScoreChange(match, match.homeTeamId, $event)"
+                    (awayChange)="onScoreChange(match, match.awayTeamId, $event)"
+                  />
+                }
+              </div>
+            }
+
+            <!-- Guardar resultados eliminatoria -->
+            @if (hasPendingScores()) {
+              <div class="save-scores-row">
+                <p-button
+                  styleClass="save-scores-btn"
+                  [disabled]="savingScores()"
+                  (onClick)="saveAllScores()"
+                >
+                  <i class="pi pi-save mr-2"></i>
+                  {{ savingScores() ? 'Guardando...' : 'Guardar cambios' }}
+                </p-button>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Clasificación por grupo -->
+        @for (grp of ['A', 'B']; track grp) {
+          @let rows = standingsForGroup($any(grp));
+          @if (rows.length > 0) {
+            <div class="standings-section mb-4">
+              <h4 class="text-glow-cyan orbitron-font mb-2" style="text-align:center">Clasificación Grupo {{ grp }}</h4>
+              <app-standings-table [rows]="rows" />
+            </div>
+          }
+        }
+
+        <!-- ====== MÓDULO DE SEGURIDAD ====== -->
+        <div class="security-section mt-5">
+          <h3 class="text-glow-magenta orbitron-font mb-4">
+            <i class="pi pi-shield mr-2"></i>Módulo de Seguridad
+          </h3>
+
+          <div class="security-actions mb-4">
+            <p-button
+              styleClass="p-button-outlined p-button-sm mr-2"
+              [disabled]="creatingManualBackup()"
+              (onClick)="createManualBackup()"
+              pTooltip="Crear snapshot manual">
+              <i class="pi pi-camera mr-1"></i>{{ creatingManualBackup() ? 'Guardando...' : 'Crear snapshot' }}
+            </p-button>
+            <p-button
+              styleClass="p-button-outlined p-button-sm p-button-success mr-2"
+              (onClick)="downloadXlsxFile()"
+              pTooltip="Descargar resumen completo del torneo en Excel (.xlsx)">
+              <i class="pi pi-file-excel mr-1"></i>Descargar Excel
+            </p-button>
+            <p-button
+              styleClass="p-button-outlined p-button-sm p-button-warning"
+              (onClick)="fileInput.click()"
+              pTooltip="Subir snapshot JSON y restaurar">
+              <i class="pi pi-upload mr-1"></i>Subir snapshot
+            </p-button>
+            <input #fileInput type="file" accept=".json" hidden (change)="onBackupFileSelected($event)" />
+          </div>
+
+          <p-table
+            [value]="pagedBackups()"
+            [loading]="loadingBackups()"
+            [sortField]="'createdAt'"
+            [sortOrder]="-1"
+            styleClass="p-datatable-sm p-datatable-striped">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Tipo</th>
+                <th>Detalle</th>
+                <th pSortableColumn="createdAt">Fecha <p-sortIcon field="createdAt"></p-sortIcon></th>
+                <th>Tamaño</th>
+                <th class="text-right">Acciones</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-backup>
+              <tr>
+                <td><span class="backup-trigger-badge trigger-{{ backup.trigger }}">{{ backup.trigger }}</span></td>
+                <td><span class="backup-detail">{{ backup.triggerDetail }}</span></td>
+                <td class="backup-date text-muted" style="white-space:nowrap">{{ backup.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                <td class="backup-size text-muted" style="white-space:nowrap">{{ backup.sizeBytes / 1024 | number:'1.0-1' }} KB</td>
+                <td class="text-right" style="white-space:nowrap">
+                  <p-button styleClass="p-button-text p-button-sm mr-1" pTooltip="Descargar snapshot" (onClick)="downloadBackupFile(backup)">
+                    <i class="pi pi-download"></i>
+                  </p-button>
+                  <p-button styleClass="p-button-text p-button-sm p-button-warning mr-1" pTooltip="Restaurar este snapshot" (onClick)="openRestoreConfirm(backup)">
+                    <i class="pi pi-history"></i>
+                  </p-button>
+                  <p-button styleClass="p-button-text p-button-sm p-button-danger" pTooltip="Eliminar snapshot" (onClick)="deleteBackupFile(backup)">
+                    <i class="pi pi-trash"></i>
+                  </p-button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr><td colspan="5" class="text-center text-muted py-3" style="font-size:0.85rem">Sin snapshots. Se crean automáticamente en cada operación.</td></tr>
+            </ng-template>
+          </p-table>
+          <app-neon-paginator
+            [totalRecords]="backups().length"
+            [first]="backupsPaginatorFirst()"
+            [rows]="backupsPaginatorRows()"
+            (pageChange)="onBackupsPageChange($event)">
+          </app-neon-paginator>
+        </div>
+
+      </div>
+    }
+  }
+
+  <!-- ===================== DIALOG FORM ===================== -->
+  <ng-template #tournamentFormTpl>
+    <div class="tournament-form">
+      <div class="field mb-3">
+        <label>Nombre del torneo *</label>
+        <input pInputText type="text" class="w-full neon-input" [ngModel]="formName()" (ngModelChange)="formName.set($event)" />
+      </div>
+      <div class="field mb-4">
+        <label>Fecha del evento</label>
+        <input
+          pInputText
+          type="date"
+          class="w-full neon-input"
+          [ngModel]="formDate() | date:'yyyy-MM-dd'"
+          (ngModelChange)="onDateChange($event)"
+        />
+      </div>
+      @if (editingId()) {
+        <div class="field mb-4" style="display:flex; align-items:center; gap:0.75rem;">
+          <label class="mb-0">Visible al público (activo)</label>
+          <input
+            type="checkbox"
+            class="neon-checkbox"
+            [ngModel]="formIsActive()"
+            (ngModelChange)="formIsActive.set($event)"
+          />
+          <span class="status-badge" [class.active]="formIsActive()">
+            {{ formIsActive() ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
+      }
+      <p-button styleClass="w-full p-button-success" (onClick)="saveForm()">
+        <i class="pi pi-save mr-2"></i>Guardar
+      </p-button>
+    </div>
+  </ng-template>
+
+  <!-- ===================== CONFIRM RE-SORTEO ===================== -->
+  @if (confirmUndoVisible()) {
+    <div class="confirm-overlay">
+      <div class="confirm-box neon-panel p-4">
+        <p class="text-glow-magenta orbitron-font mb-3">¿Re-sortear?</p>
+        <p class="text-muted mb-4" style="font-size:0.9rem">Se eliminarán todos los partidos actuales y el sorteo. Esta acción no se puede deshacer.</p>
+        <div class="flex gap-2 justify-end">
+          <p-button styleClass="p-button-outlined p-button-sm" (onClick)="confirmUndoVisible.set(false)">Cancelar</p-button>
+          <p-button styleClass="cyberpunk-danger-btn p-button-sm" (onClick)="undoDraw()">Sí, re-sortear</p-button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ===================== CONFIRM BORRADO DE TORNEO ===================== -->
+  @if (confirmDeleteVisible()) {
+    <div class="confirm-overlay">
+      <div class="confirm-box neon-panel p-4">
+        <p class="text-glow-magenta orbitron-font mb-3">¿Eliminar torneo?</p>
+        <p class="text-muted mb-4" style="font-size:0.9rem">
+          Se eliminará <strong>{{ tournamentToDelete()?.name }}</strong> y todos sus datos. Esta acción no se puede deshacer.
+        </p>
+        <div class="flex gap-2 justify-end">
+          <p-button styleClass="p-button-outlined p-button-sm" (onClick)="confirmDeleteVisible.set(false); tournamentToDelete.set(null)">Cancelar</p-button>
+          <p-button styleClass="cyberpunk-danger-btn p-button-sm" (onClick)="confirmDelete()">Sí, eliminar</p-button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ===================== CONFIRM RESTAURAR SNAPSHOT ===================== -->
+  @if (restoreConfirmVisible()) {
+    <div class="confirm-overlay">
+      <div class="confirm-box neon-panel p-4">
+        <p class="text-glow-magenta orbitron-font mb-2">Restaurar snapshot</p>
+        <p class="text-muted mb-1" style="font-size:0.85rem">
+          <strong>{{ backupToRestore()?.triggerDetail || backupToRestore()?.trigger }}</strong>
+          — {{ backupToRestore()?.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}
+        </p>
+        <p class="text-muted mb-4" style="font-size:0.85rem">
+          Esta acción borrará el estado actual del torneo y lo reemplazará con el snapshot seleccionado.
+          Escribe <strong style="color:var(--neon-magenta)">RESTAURAR</strong> para confirmar.
+        </p>
+        <input
+          pInputText
+          type="text"
+          class="w-full neon-input mb-4"
+          placeholder="Escribe RESTAURAR"
+          [ngModel]="restoreConfirmText()"
+          (ngModelChange)="restoreConfirmText.set($event)"
+        />
+        <div class="flex gap-2 justify-end">
+          <p-button
+            styleClass="p-button-outlined p-button-sm"
+            (onClick)="restoreConfirmVisible.set(false); backupToRestore.set(null)">
+            Cancelar
+          </p-button>
+          <p-button
+            styleClass="cyberpunk-danger-btn p-button-sm"
+            [disabled]="!canRestore() || restoringBackup()"
+            (onClick)="confirmRestore()">
+            <i class="pi pi-history mr-1"></i>{{ restoringBackup() ? 'Restaurando...' : 'Restaurar' }}
+          </p-button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,148 @@
+/* Contenedores base */
+.neon-panel {
+    background: rgba(11, 12, 16, 0.6) !important;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.1);
+}
+
+/* ---------------- PrimeNG Table Overrides ---------------- */
+::ng-deep .p-datatable .p-datatable-header,
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background: rgba(11, 12, 16, 0.9) !important;
+    color: var(--neon-cyan) !important;
+    border-bottom: 2px solid var(--neon-cyan) !important;
+    text-shadow: 0 0 5px var(--neon-cyan);
+    font-weight: bold;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+    color: #e0e6ed !important;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+    background: rgba(0, 229, 255, 0.05) !important;
+    box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    border: none !important;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.2) !important;
+}
+
+/* ---------------- PrimeNG Dialog Overrides ---------------- */
+::ng-deep .p-dialog {
+    box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 10px rgba(0, 229, 255, 0.2) !important;
+    border: 1px solid var(--neon-cyan) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+    background: rgba(11, 12, 16, 0.95) !important;
+    color: var(--neon-magenta) !important;
+    border-bottom: 1px solid var(--neon-magenta) !important;
+    text-shadow: 0 0 5px var(--neon-magenta);
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+    background: rgba(11, 12, 16, 0.95) !important;
+    color: #e0e6ed !important;
+    padding-top: 2rem !important;
+}
+
+::ng-deep .p-dialog .p-dialog-footer {
+    background: rgba(11, 12, 16, 0.95) !important;
+    border-top: 1px solid rgba(0, 229, 255, 0.3) !important;
+}
+
+::ng-deep .p-dialog .p-dialog-header-icon {
+    color: var(--neon-cyan) !important;
+}
+
+::ng-deep .p-dialog .p-dialog-header-icon:hover {
+    color: var(--neon-magenta) !important;
+    text-shadow: 0 0 8px var(--neon-magenta);
+}
+
+/* ---------------- PrimeNG Forms Overrides ---------------- */
+::ng-deep .p-inputtext,
+::ng-deep .p-inputnumber-input,
+::ng-deep .p-dropdown,
+::ng-deep .p-select {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(0, 229, 255, 0.4) !important;
+    color: var(--neon-cyan) !important;
+}
+
+::ng-deep .p-inputtext:enabled:hover,
+::ng-deep .p-inputnumber-input:enabled:hover,
+::ng-deep .p-dropdown:not(.p-disabled):hover,
+::ng-deep .p-select:not(.p-disabled):hover {
+    border-color: var(--neon-magenta) !important;
+    box-shadow: 0 0 5px var(--neon-magenta) !important;
+}
+
+::ng-deep .p-inputtext:enabled:focus,
+::ng-deep .p-inputnumber-input:enabled:focus,
+::ng-deep .p-dropdown.p-dropdown-open,
+::ng-deep .p-select.p-select-open {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 8px var(--neon-cyan) !important;
+    border-color: var(--neon-cyan) !important;
+}
+
+::ng-deep .field label {
+    color: #8b9bb4;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* ---------------- PrimeNG Botones Overrides ---------------- */
+::ng-deep .p-button {
+    background: transparent !important;
+    border: 1px solid var(--neon-cyan) !important;
+    color: var(--neon-cyan) !important;
+    box-shadow: 0 0 5px rgba(0, 229, 255, 0.2), inset 0 0 5px rgba(0, 229, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+::ng-deep .p-button:hover, ::ng-deep .p-button:active {
+    background: rgba(0, 229, 255, 0.1) !important;
+    border-color: var(--neon-magenta) !important;
+    color: var(--neon-magenta) !important;
+    box-shadow: 0 0 10px var(--neon-magenta), inset 0 0 10px rgba(255, 0, 255, 0.2) !important;
+    text-shadow: 0 0 5px var(--neon-magenta) !important;
+}
+
+::ng-deep .p-button.p-button-success {
+    border-color: #00ffaa !important;
+    color: #00ffaa !important;
+}
+
+::ng-deep .p-button.p-button-success:hover {
+    border-color: var(--neon-cyan) !important;
+    color: var(--neon-cyan) !important;
+    box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 10px rgba(0, 229, 255, 0.3) !important;
+    text-shadow: 0 0 5px var(--neon-cyan) !important;
+}
+
+::ng-deep .p-button.p-button-warning {
+    border-color: #ffaa00 !important;
+    color: #ffaa00 !important;
+}
+
+::ng-deep .p-button.p-button-warning:hover {
+    border-color: var(--neon-magenta) !important;
+    color: var(--neon-magenta) !important;
+    box-shadow: 0 0 10px var(--neon-magenta), inset 0 0 10px rgba(255, 0, 255, 0.3) !important;
+    text-shadow: 0 0 5px var(--neon-magenta) !important;
+}

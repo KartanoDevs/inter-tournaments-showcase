@@ -1,0 +1,308 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// MÓDULO DE AUTENTICACIÓN Y SEGURIDAD
+// ==========================================
+
+/// Tabla principal de usuarios con medidas de seguridad (Soft Delete & Metadata)
+model User {
+  // 1. Identificadores y Seguridad (PK, CUID)
+  id String @id @default(cuid()) @map("id")
+
+  // 2. Datos Base (Indexados para el login)
+  email    String @unique @db.VarChar(255)
+  password String @db.VarChar(255) // Hash Bcrypt (¡Nunca en plano!)
+
+  // 3. Estado y Control (Soft Delete & Toggles)
+  isActive  Boolean @default(true) @map("is_active")
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  // 4. Metadatos extra usables en JSON (Flexibilidad sin alterar la tabla)
+  metadata Json? @db.JsonB // Ej: {"theme": "dark", "lastLoginIp": "192.168.1.1"}
+
+  // 5. Rol Estricto (Usando un Enum nativo en vez de una tabla separada)
+  role RoleType @default(PLAYER) @map("role")
+
+  // Relación opcional inversa con el perfil de Jugador (1 Usuario puede tener 1 Ficha Deportiva)
+  player Player?
+
+  // 6. Timestamps (Auditoría Básica)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Reglas de indexación
+  @@index([email])
+  @@index([role])
+  // Nombrado en base de datos
+  @@map("users")
+}
+
+/// Enumerador estricto para los Roles (Más rápido que hacer JOINs con una tabla)
+enum RoleType {
+  SUPERADMIN
+  ADMIN
+  COACH
+  PLAYER
+}
+
+// ==========================================
+// MÓDULO DE ENTIDADES DEPORTIVAS (VOLEY)
+// ==========================================
+
+/// Equipos que participan en la liga/eventos.
+model Team {
+  id String @id @default(cuid()) @map("id")
+
+  // Datos del equipo
+  name      String  @unique @db.VarChar(100)
+  shortName String  @map("short_name") @db.VarChar(10) // Ej: "INT", "VENG"
+  logo      String? @db.Text
+
+  // Colores corporativos (útil para el Frontend, ej: #FF00FF)
+  colorMain       String?         @map("color_main") @db.VarChar(7)
+  colorSec        String?         @map("color_sec") @db.VarChar(7)
+
+  // Tipo de competición (determina géneros gramaticales en la UI)
+  competitionType CompetitionType @default(MALE) @map("competition_type")
+
+  // Relación: Un equipo tiene muchos jugadores (N)
+  players Player[]
+
+  // Relaciones de Infraestructura (Horarios del equipo en pabellones)
+  schedules Schedule[]
+
+  // Auditoría y Estado Global
+  isActive  Boolean  @default(true) @map("is_active")
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("teams")
+}
+
+/// Posiciones específicas de Voleibol en Pista (Evitar strings manuales mal escritos)
+enum VolleyballPosition {
+  SETTER         // Colocador/a
+  OUTSIDE_HITTER // Receptor/a
+  OPPOSITE       // Opuesto/a
+  MIDDLE_BLOCKER // Central
+  LIBERO         // Líbero/a
+  UNIVERSAL      // Universal
+  COACH          // Entrenador/a
+  UNASSIGNED     // Sin asignar
+}
+
+/// Tipo de competición del equipo
+enum CompetitionType {
+  MALE
+  FEMALE
+}
+
+/// Ficha de un Jugador
+model Player {
+  id String @id @default(cuid()) @map("id")
+
+  // Datos Personales Deportivos
+  firstName String  @map("first_name") @db.VarChar(100)
+  lastName  String  @map("last_name") @db.VarChar(100)
+  nickname  String? @db.VarChar(50) // Apodo del jugador
+
+  // Atributos de Juego
+  number   Int                @db.SmallInt // Dorsal de la camiseta (1-99)
+  position VolleyballPosition @default(UNASSIGNED)
+
+  // Físico (Rendimiento deportivo general)
+  heightCm Int? @map("height_cm") @db.SmallInt // Altura en cm, permite nulos opcionales
+
+  // Multimedia (Fotos del jugador para Frontend)
+  imageUrl     String? @map("image_url") @db.Text // Retrato tamaño completo o cuerpo entero
+  thumbnailUrl String? @map("thumbnail_url") @db.Text // Avatar reducido para Roster/Scoreboard
+
+  // 1. Relación Fuerte DENTRO DEL CAMPO (1 Equipo tiene N Jugadores)
+  teamId String @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id])
+
+  // 2. Relación Fuerte FUERA DEL CAMPO (1 Jugador = 1 Cuenta de Login)
+  //    *Opcional: Si fichas a un jugador de forma urgente, el admin puede crearle la ficha en BD
+  //    antes incluso de que el jugador se cree cuenta para loguear y vincularse.*
+  userId String? @unique @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id])
+
+  // Auditoría y Estado Global
+  isActive  Boolean  @default(true) @map("is_active")
+  isPoke    Boolean  @default(false) @map("is_poke")   // Activa la animación especial al hacer clic
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Índices vitales de cruce
+  @@index([teamId])
+  @@index([userId])
+  @@map("players")
+}
+
+// ==========================================
+// MÓDULO DE PATROCINADORES Y SPONSORS
+// ==========================================
+
+/// Información de nuestros patrocinadores (Marcas/Entidades)
+model Sponsor {
+  id          String  @id @default(cuid()) @map("id")
+  name        String  @unique @db.VarChar(150)
+  description String? @db.Text
+  logo        String? @db.Text // URL o Base64
+
+  // Redes y enlaces
+  instagramUrl String? @map("instagram_url") @db.Text
+  facebookUrl  String? @map("facebook_url") @db.Text
+  websiteUrl   String? @map("website_url") @db.Text
+
+  // Auditoría Básica
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sponsors")
+}
+
+
+// ==========================================
+// MÓDULO DE TORNEOS 4 vs 4
+// ==========================================
+
+enum TournamentGroup {
+  A
+  B
+}
+
+enum TournamentPhase {
+  GROUP
+  QF
+  SF
+  THIRD
+  FINAL
+}
+
+model Tournament {
+  id        String    @id @default(cuid()) @map("id")
+  name      String    @db.VarChar(150)
+  date      DateTime?
+  isActive  Boolean   @default(true) @map("is_active")
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  teams   Tournament4v4Team[]
+  matches TournamentMatch[]
+
+  @@map("tournaments")
+}
+
+model Tournament4v4Team {
+  id           String           @id @default(cuid()) @map("id")
+  name         String           @db.VarChar(100)
+  group        TournamentGroup?
+  drawOrder    Int?             @map("draw_order") @db.SmallInt
+  tournamentId String           @map("tournament_id")
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  homeMatches  TournamentMatch[] @relation("HomeTeam")
+  awayMatches  TournamentMatch[] @relation("AwayTeam")
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  @@index([tournamentId])
+  @@map("tournament_4v4_teams")
+}
+
+model TournamentMatch {
+  id           String            @id @default(cuid()) @map("id")
+  tournamentId String            @map("tournament_id")
+  tournament   Tournament        @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  phase        TournamentPhase   @default(GROUP)
+  group        TournamentGroup?
+  homeTeamId   String            @map("home_team_id")
+  awayTeamId   String            @map("away_team_id")
+  homeTeam     Tournament4v4Team @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam     Tournament4v4Team @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  homeScore    Int?              @map("home_score") @db.SmallInt
+  awayScore    Int?              @map("away_score") @db.SmallInt
+  played       Boolean           @default(false)
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  @@unique([tournamentId, phase, homeTeamId, awayTeamId])
+  @@index([tournamentId, phase])
+  @@index([tournamentId, group])
+  @@map("tournament_matches")
+}
+
+// ==========================================
+// MÓDULO DE INFRAESTRUCTURA (CLUB E INSTALACIONES)
+// ==========================================
+
+model Club {
+  id   String @id @default(cuid()) @map("id")
+  name String @unique @db.VarChar(100)
+
+  // Textos descriptivos
+  aboutUs        String @map("about_us") @db.Text // Quiénes somos formal
+  funDescription String @map("fun_description") @db.Text // Descripción graciosa (Ideal para inyectar esa identidad cyber-costumbrista o voley-punk)
+
+  // Contacto y Redes
+  contactEmail String? @map("contact_email") @db.VarChar(255)
+  socialMedia  Json?   @map("social_media") @db.JsonB // Para guardar un objeto { "ig": "...", "tiktok": "..." } sin crear muchas columnas
+
+  // Relaciones
+  venues Venue[] // Relación 1:N con los pabellones
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("clubs")
+}
+
+model Venue {
+  id            String  @id @default(cuid()) @map("id")
+  name          String  @unique @db.VarChar(150) // Ej: "Pabellón Municipal Centro"
+  address       String  @db.VarChar(255)
+  googleMapsUrl String? @map("google_maps_url") @db.Text // Útil para mostrar en la web
+
+  // Relaciones
+  clubId    String     @map("club_id")
+  club      Club       @relation(fields: [clubId], references: [id])
+  schedules Schedule[] // Relación con los horarios de entrenamiento
+
+  @@index([clubId])
+  @@map("venues")
+}
+
+model Schedule {
+  id        String @id @default(cuid()) @map("id")
+  dayOfWeek Int    @db.SmallInt // 1 = Lunes, 2 = Martes... 7 = Domingo (Fácil para ordenar)
+  startTime String @db.VarChar(5) // Ej: "18:00"
+  endTime   String @db.VarChar(5) // Ej: "20:00"
+  type      String @default("TRAINING") @db.VarChar(20) // Podría ser "TRAINING" o "MATCH"
+
+  // Relaciones (Conectamos con tus tablas existentes)
+  teamId String @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id])
+
+  venueId String @map("venue_id")
+  venue   Venue  @relation(fields: [venueId], references: [id])
+
+  isActive Boolean @default(true) @map("is_active")
+
+  @@index([teamId])
+  @@index([venueId])
+  @@map("schedules")
+}

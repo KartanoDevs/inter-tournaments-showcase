@@ -1,0 +1,147 @@
+<div class="scoreboard-fullscreen">
+
+  <!-- Fondo matrix de símbolos (componente reutilizable) -->
+  <app-symbol-matrix [symbols]="matrixSymbols" />
+
+  <!-- Overlay oscuro sobre el matrix -->
+  <div class="matrix-overlay" aria-hidden="true"></div>
+
+  <!-- Overlay: girar dispositivo (solo portrait móvil) -->
+  <app-rotate-device></app-rotate-device>
+
+  <!-- Contenido del marcador (landscape) -->
+  <div class="scoreboard-landscape-content">
+    <!-- Marcador principal: contiene todo — paneles, icono, botones de acción -->
+    <div class="scoreboard-main glow-cyan">
+
+      <!-- Botón de salida (esquina superior izquierda dentro del card) -->
+      @if (!isScoreboardOnly) {
+      <a routerLink="/torneos" class="exit-btn" aria-label="Salir del marcador">
+        <i class="pi pi-arrow-left"></i>
+      </a>
+      }
+      
+      <!-- Panel local -->
+      <div class="team-panel">
+        @if (tournamentTeams().length > 0) {
+        <select class="team-name team-name-select" [class.text-glow-cyan]="localScore() > awayScore()"
+          (change)="onNameInput('local', $event)">
+          <option value="" disabled [selected]="localName() === 'LOCAL'">— Local —</option>
+          @for (team of tournamentTeams(); track team.id) {
+          <option [value]="team.name" [selected]="localName() === team.name">{{ team.name }}</option>
+          }
+        </select>
+        } @else if (editingLocalName()) {
+        <input class="team-name team-name-input" [class.text-glow-cyan]="localScore() > awayScore()" [value]="localName()"
+          (input)="onNameInput('local', $event)"
+          (blur)="finishEditingName('local')" (keyup.enter)="finishEditingName('local')" autofocus />
+        } @else {
+        <h2 class="team-name" [class.text-glow-cyan]="localScore() > awayScore()" (click)="startEditingName('local')">
+          {{ localName() }}</h2>
+        }
+        <div class="score-digit" [class.pulse-active]="localPulse()">{{ localScore() }}</div>
+        <div class="sets-display text-glow-cyan">Sets: {{ localSets() }}</div>
+        <div class="controls-row big-controls">
+          <div class="shield-btn negative" (click)="updateScore('local', -1)"><i class="pi pi-minus"></i></div>
+          <div class="shield-btn positive" (click)="updateScore('local', 1)"><i class="pi pi-plus"></i></div>
+        </div>
+        <div class="controls-row small-controls mt-2">
+          <app-neon-button size="sm" (onClick)="updateSets('local', -1)">- Set</app-neon-button>
+          <app-neon-button size="sm" (onClick)="updateSets('local', 1)">+ Set</app-neon-button>
+        </div>
+      </div>
+
+      <!-- Centro: icono del club + botón cambiar lado + reiniciar + maxPoints -->
+      <div class="board-center">
+        <div class="board-center-icon">
+          <img src="\icons\icon-128.png" alt="C.V. Inter Logo" class="board-logo" />
+        </div>
+        <!-- Editor de puntos y sets máximos -->
+        <div class="max-config-badges">
+          <div class="max-points-badge">
+            @if (editingMaxPoints()) {
+            <input #maxPtsInput type="number" class="max-points-input" [value]="maxPoints()"
+              (blur)="finishEditingMaxPoints(maxPtsInput.value)" (keyup.enter)="finishEditingMaxPoints(maxPtsInput.value)"
+              min="1" max="99" autofocus />
+            } @else {
+            <span class="max-points-label" (click)="startEditingMaxPoints()" title="Puntos para ganar set">
+              <i class="pi pi-flag-fill"></i> {{ maxPoints() }} PTS
+            </span>
+            }
+          </div>
+          <div class="max-points-badge">
+            @if (editingMaxSets()) {
+            <input #maxSetsInput type="number" class="max-points-input" [value]="maxSets()"
+              (blur)="finishEditingMaxSets(maxSetsInput.value)" (keyup.enter)="finishEditingMaxSets(maxSetsInput.value)" min="1" max="5"
+              autofocus />
+            } @else {
+            <span class="max-points-label" (click)="startEditingMaxSets()" title="Sets para ganar partido">
+              <i class="pi pi-trophy"></i> {{ maxSets() }} SETS
+            </span>
+            }
+          </div>
+        </div>
+        <div class="center-actions">
+          <app-neon-button variant="reject" size="sm" fontSize="1.2em" (onClick)="switchSides()">
+            Cambiar
+            <i class="pi pi-arrow-right-arrow-left"></i>
+            </app-neon-button>
+          <app-neon-button variant="accept" size="sm" fontSize="1.2em" (onClick)="requestReset()">
+            Reiniciar
+            <i class="pi pi-power-off"></i>
+          </app-neon-button>
+          </div>
+      </div>
+      
+      <!-- Panel visitante -->
+      <div class="team-panel">
+        @if (tournamentTeams().length > 0) {
+        <select class="team-name team-name-select" [class.text-glow-cyan]="awayScore() > localScore()"
+          (change)="onNameInput('away', $event)">
+          <option value="" disabled [selected]="awayName() === 'VISITA'">— Visita —</option>
+          @for (team of tournamentTeams(); track team.id) {
+          <option [value]="team.name" [selected]="awayName() === team.name">{{ team.name }}</option>
+          }
+        </select>
+        } @else if (editingAwayName()) {
+        <input class="team-name team-name-input" [class.text-glow-cyan]="awayScore() > localScore()" [value]="awayName()"
+          (input)="onNameInput('away', $event)"
+          (blur)="finishEditingName('away')" (keyup.enter)="finishEditingName('away')" autofocus />
+        } @else {
+        <h2 class="team-name" [class.text-glow-cyan]="awayScore() > localScore()" (click)="startEditingName('away')">
+          {{ awayName() }}</h2>
+        }
+        <div class="score-digit" [class.pulse-active]="awayPulse()">{{ awayScore() }}</div>
+        <div class="sets-display text-glow-cyan">Sets: {{ awaySets() }}</div>
+        <div class="controls-row big-controls">
+          <div class="shield-btn negative" (click)="updateScore('away', -1)"><i class="pi pi-minus"></i></div>
+          <div class="shield-btn positive" (click)="updateScore('away', 1)"><i class="pi pi-plus"></i></div>
+        </div>
+        <div class="controls-row small-controls mt-2">
+          <app-neon-button size="sm" (onClick)="updateSets('away', -1)">- Set</app-neon-button>
+          <app-neon-button size="sm" (onClick)="updateSets('away', 1)">+ Set</app-neon-button>
+          </div>
+          </div>
+
+      </div> <!-- /.scoreboard-main -->
+      </div> <!-- /.scoreboard-landscape-content -->
+      
+      <!-- ConfirmPopup de reinicio -->
+      <app-neon-confirm-popup [visible]="showResetDialog()" title="REINICIAR MARCADOR" message="¿Qué quieres reiniciar?"
+        confirmLabel="Todo" extraLabel="Mantener nombres" extraVariant="accept" cancelLabel="Cancelar" confirmVariant="reject"
+        (confirm)="confirmReset()" (extra)="confirmResetKeepNames()" (cancel)="cancelReset()">
+      </app-neon-confirm-popup>
+      
+      <!-- Popup set ganado -->
+      <app-neon-confirm-popup [visible]="showSetWonPopup()" [title]="'\uD83C\uDFC6 SET GANADO'"
+        [message]="setWinnerName() + ' ha ganado el set. \u00bfEmpezar el siguiente?'" confirmLabel="Siguiente Set"
+        cancelLabel="Cerrar" confirmVariant="accept" (confirm)="startNextSet()" (cancel)="dismissSetWon()">
+      </app-neon-confirm-popup>
+      
+      <!-- Popup partido ganado -->
+      <app-neon-confirm-popup [visible]="showMatchWonPopup()" [title]="'\uD83C\uDFC1 PARTIDO GANADO'"
+        [message]="'\u00A1El equipo ' + matchWinnerName() + ' ha ganado el partido!'" confirmLabel="Aceptar" cancelLabel=""
+        confirmVariant="accept" (confirm)="dismissMatchWon()" (cancel)="dismissMatchWon()">
+      </app-neon-confirm-popup>
+      
+      </div> <!-- /.scoreboard-fullscreen -->

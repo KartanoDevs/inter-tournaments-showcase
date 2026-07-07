@@ -1,0 +1,88 @@
+/* =========================================================
+   Overlay oscuro: cubre toda la pantalla
+   ========================================================= */
+.ncp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(5, 5, 15, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ncp-fade-in 0.15s ease;
+}
+
+/* =========================================================
+   Card del popup
+   ========================================================= */
+.ncp-card {
+  background: rgba(12, 16, 35, 0.95);
+  border: 1px solid rgba(0, 255, 251, 0.25);
+  border-radius: 10px;
+  box-shadow:
+    0 0 20px rgba(0, 255, 251, 0.1),
+    0 8px 40px rgba(0, 0, 0, 0.6);
+  min-width: 280px;
+  max-width: 90vw;
+  overflow: hidden;
+  animation: ncp-slide-up 0.2s ease;
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+.ncp-header {
+  padding: 1rem 1.5rem 0.75rem;
+  border-bottom: 1px solid rgba(0, 255, 251, 0.15);
+}
+
+.ncp-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(0, 255, 251, 0.5);
+}
+
+/* =========================================================
+   Body
+   ========================================================= */
+.ncp-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.ncp-message {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* =========================================================
+   Footer con los botones
+   ========================================================= */
+.ncp-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================
+   Animaciones de entrada
+   ========================================================= */
+@keyframes ncp-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ncp-slide-up {
+  from { transform: translateY(12px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}

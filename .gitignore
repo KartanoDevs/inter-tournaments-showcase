@@ -1,0 +1,57 @@
+# ==========================================
+# DEPENDENCIAS
+# ==========================================
+node_modules/
+
+# ==========================================
+# ARCHIVOS DE ENTORNO (SENSIBLES)
+# No subir NUNCA al repositorio. Transferir manualmente al servidor.
+# ==========================================
+.env
+.env.local
+.env.*.local
+!.env.example
+!*.env.example
+backend/.env
+backend/.env.production
+frontend/.env
+
+# ==========================================
+# BACKUPS Y DUMPS DE BASE DE DATOS
+# (backend/init.sql es el schema base y se mantiene trackeado)
+# ==========================================
+database_dump.sql
+*.dump
+*.bak
+*.tar.gz
+*.zip
+uploads_backup*
+
+# ==========================================
+# ARTEFACTOS DE BUILD
+# ==========================================
+backend/dist/
+frontend/dist/
+frontend/.angular/cache/
+
+# ==========================================
+# UPLOADS DE USUARIOS
+# Se persisten en un volumen Docker, no en Git
+# ==========================================
+backend/public/uploads/
+
+# ==========================================
+# ARCHIVOS DE SISTEMA Y EDITORES
+# ==========================================
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+
+# ==========================================
+# ARCHIVOS DE DEPURACIÓN TEMPORALES
+# ==========================================
+diff-frontend.txt
+ts_errors*.txt
+status*.txt
+backend/create-user.ts

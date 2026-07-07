@@ -1,0 +1,80 @@
+.neon-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: var(--bg-dark);
+  border-top: 1px solid rgba(0, 229, 255, 0.2);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+  flex: 1;
+}
+
+.nav-item i {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.nav-item.active {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+/* Botón Central Flotante */
+.central-btn {
+  position: relative;
+  top: -20px;
+  flex: 0 0 70px;
+}
+
+.neon-circle {
+  width: 50px;
+  height: 50px;
+  background-color: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px var(--neon-cyan);
+  border: 2px solid var(--neon-cyan);
+  transition: all 0.3s ease;
+  animation: pulse-glow 2s infinite; /* Added pulse-glow */
+}
+
+.neon-circle i, 
+.neon-circle .volleyball-icon {
+  font-size: 1.8rem;
+  width: 1.8rem; /* Tamaño exacto para el SVG */
+  height: 1.8rem;
+  color: var(--text-main);
+  margin-bottom: 0;
+  transition: color 0.3s ease;
+}
+
+.central-btn.active .neon-circle {
+  border-color: var(--neon-magenta);
+  box-shadow: 0 0 15px var(--neon-magenta), inset 0 0 10px var(--neon-magenta);
+}
+
+.central-btn.active .neon-circle i,
+.central-btn.active .neon-circle .volleyball-icon {
+  color: var(--neon-magenta);
+}
+

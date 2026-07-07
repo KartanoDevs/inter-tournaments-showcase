@@ -1,0 +1,45 @@
+.rotate-device-container {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 900px) {
+  .rotate-device-container {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: rgba(5, 5, 10, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .rotate-device-overlay {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    color: var(--neon-cyan);
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .rotate-icon {
+    font-size: 5rem;
+    animation: rotate-hint 2s ease-in-out infinite;
+  }
+
+  .rotate-device-overlay p {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+  }
+}
+
+@keyframes rotate-hint {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}

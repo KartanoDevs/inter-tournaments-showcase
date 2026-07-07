@@ -1,0 +1,37 @@
+<div class="page-container">
+  <h1 class="page-title text-glow-magenta">Contacto</h1>
+
+  <div class="contact-card glow-cyan">
+    <div class="info-section">
+      <i class="pi pi-map-marker info-icon"></i>
+      <h3>Dónde Entrenamos</h3>
+      <p>Pabellón de Deportes Universitario de  Murcia</p>
+    </div>
+
+    <div class="info-section">
+      <i class="pi pi-envelope info-icon"></i>
+      <h3>Correo Electrónico</h3>
+      <p>info&#64;cvinterauu.com</p>
+    </div>
+
+    <div class="info-section social-section">
+      <h3>Nuestras Redes</h3>
+      <div class="social-buttons">
+        <a href="#" class="social-btn"><i class="pi pi-instagram"></i></a>
+        <a href="#" class="social-btn"><i class="pi pi-twitter"></i></a>
+        <a href="#" class="social-btn"><i class="pi pi-facebook"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sponsors-section">
+    <h2 class="text-glow-cyan">Nuestros Patrocinadores</h2>
+    <div class="sponsors-grid">
+      @for (sponsor of sponsors(); track sponsor.id) {
+      <app-sponsor-card [sponsor]="sponsor"></app-sponsor-card>
+      } @empty {
+      <div class="no-sponsors text-muted">Aún no hay patrocinadores registrados.</div>
+      }
+    </div>
+  </div>
+</div>

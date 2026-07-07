@@ -1,0 +1,12 @@
+node_modules
+dist
+.angular
+.git
+.gitignore
+*.md
+build_error.txt
+ignore
+
+# Reglas de Entorno añadidas por precaución porsiacaso la familia se despista
+.env
+.env.*

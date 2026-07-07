@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prisma *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3000\")",
+      "Bash(findstr \"db\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/tournaments -H \"Content-Type: application/json\" -H \"Authorization: Bearer test\" -d \"{\\\\\"name\\\\\":\\\\\"Test\\\\\"}\")",
+      "Bash(npx vitest *)"
+    ]
+  }
+}

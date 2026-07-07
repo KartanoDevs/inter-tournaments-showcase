@@ -1,0 +1,75 @@
+services:
+  # ==========================================
+  # SERVICIO 1: BASE DE DATOS
+  # ==========================================
+  db:
+    image: postgres:15-alpine
+    container_name: inter_auu_db
+    restart: unless-stopped
+    env_file:
+      # El env_file inyecta POSTGRES_USER, POSTGRES_PASSWORD y POSTGRES_DB directamente al contenedor
+      - ./backend/.env.production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+    healthcheck:
+      # $$ hace que la variable se expanda en el shell del contenedor (runtime), no en el YAML (parseo)
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ==========================================
+  # SERVICIO 2: API BACKEND (Node.js/Express)
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: inter_auu_backend
+    restart: unless-stopped
+    env_file:
+      # Archivo que se pasa a mano al servidor, NUNCA al repositorio Git
+      - ./backend/.env.production
+    volumes:
+      # Datos de uploads persistentes (imágenes de jugadores, equipos, etc.)
+      - uploads_data:/app/public/uploads
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ==========================================
+  # SERVICIO 3: FRONTEND (Angular + Nginx como reverse proxy)
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: inter_auu_frontend
+    restart: unless-stopped
+    networks:
+      - app_network
+      - nginx-proxy-network
+    depends_on:
+      - backend
+
+# ==========================================
+# REDES Y VOLÚMENES
+# ==========================================
+networks:
+  app_network:
+    driver: bridge
+  nginx-proxy-network:
+    external: true
+
+volumes:
+  pgdata:
+  uploads_data:

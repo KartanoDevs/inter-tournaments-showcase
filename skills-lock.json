@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json.schemastore.org/skills-lock-v1.json",
+  "format": 1,
+  "generatedAt": "2026-05-26",
+  "skillsRoot": ".agents/skills",
+  "skills": [
+    {
+      "name": "angular-component",
+      "path": ".agents/skills/angular-component",
+      "description": "Create modern Angular standalone components following v20+ best practices. Use for building UI components with signal-based inputs/outputs, OnPush change detection, host bindings, content projection, and lifecycle hooks.",
+      "local": false
+    },
+    {
+      "name": "angular-routing",
+      "path": ".agents/skills/angular-routing",
+      "description": "Implement routing in Angular v20+ applications with lazy loading, functional guards, resolvers, and route parameters. Use for navigation setup, protected routes, route-based data loading, and nested routing.",
+      "local": false
+    },
+    {
+      "name": "angular-rxjs-patterns",
+      "path": ".agents/skills/angular-rxjs-patterns",
+      "description": "Use when handling async operations in Angular applications with observables, operators, and subjects.",
+      "userInvocable": false,
+      "local": false
+    },
+    {
+      "name": "angular-signals",
+      "path": ".agents/skills/angular-signals",
+      "description": "Implement signal-based reactive state management in Angular v20+. Use for creating reactive state with signal(), derived state with computed(), dependent state with linkedSignal(), and side effects with effect().",
+      "local": false
+    },
+    {
+      "name": "clean-code",
+      "path": ".agents/skills/clean-code",
+      "description": "Applies principles from Robert C. Martin's 'Clean Code'. Use when writing, reviewing, or refactoring code to ensure high quality, readability, and maintainability. Covers naming, functions, comments, formatting and error handling.",
+      "source": "ClawForge (https://github.com/jackjin1997/ClawForge)",
+      "risk": "safe",
+      "date_added": "2026-02-27",
+      "local": false
+    },
+    {
+      "name": "cyberpunk-theme",
+      "path": ".agents/skills/cyberpunk-theme",
+      "description": "Design system real del proyecto Inter AUU / CV Inter. Paleta neón, tipografías Orbitron + Inter, efectos cyberpunk (scanlines CRT, glow, flicker, pulse), glassmorphism y overrides de PrimeNG/FilePond. Tiene precedencia sobre frontend-design para cualquier cambio visual del repo.",
+      "date_added": "2026-05-25",
+      "local": true
+    },
+    {
+      "name": "frontend-design",
+      "path": ".agents/skills/frontend-design",
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use when building web components, pages, dashboards or styling any web UI. Generates polished code that avoids generic AI aesthetics.",
+      "license": "See .agents/skills/frontend-design/LICENSE.txt",
+      "local": false
+    },
+    {
+      "name": "git-commit",
+      "path": ".agents/skills/git-commit",
+      "description": "Execute git commit + push with conventional commit message in Spanish, project-specific scopes, HEREDOC format, and Co-Authored-By footer. Use when the user asks to commit changes or mentions \"/commit\". Always pushes to remote after commit unless user says otherwise.",
+      "license": "MIT",
+      "local": true
+    },
+    {
+      "name": "nodejs-backend-patterns",
+      "path": ".agents/skills/nodejs-backend-patterns",
+      "description": "Build production-ready Node.js backend services with Express/Fastify, implementing middleware patterns, error handling, authentication, database integration, and API design best practices.",
+      "local": false
+    },
+    {
+      "name": "prisma-expert",
+      "path": ".agents/skills/prisma-expert",
+      "description": "Prisma ORM expert for schema design, migrations, query optimization, relations modeling, and database operations. Use PROACTIVELY for Prisma schema issues, migration problems and query performance.",
+      "source": "community",
+      "risk": "unknown",
+      "local": false
+    },
+    {
+      "name": "responsive-design",
+      "path": ".agents/skills/responsive-design",
+      "description": "Implement modern responsive layouts using container queries, fluid typography, CSS Grid, and mobile-first breakpoint strategies. Use when building adaptive interfaces or creating component-level responsive behavior.",
+      "local": false
+    },
+    {
+      "name": "typescript-advanced-types",
+      "path": ".agents/skills/typescript-advanced-types",
+      "description": "Master TypeScript's advanced type system including generics, conditional types, mapped types, template literals, and utility types for building type-safe applications.",
+      "local": false
+    },
+    {
+      "name": "vitest",
+      "path": ".agents/skills/vitest",
+      "description": "Vitest fast unit testing framework powered by Vite with Jest-compatible API. Use when writing tests, mocking, configuring coverage, or working with test filtering and fixtures.",
+      "source": "https://github.com/vitest-dev/vitest (scripts: https://github.com/antfu/skills)",
+      "version": "2026.1.28",
+      "author": "Anthony Fu",
+      "local": false,
+      "projectNotes": ".agents/skills/vitest/project-notes.md"
+    },
+    {
+      "name": "writing-skills",
+      "path": ".agents/skills/writing-skills",
+      "description": "Use when creating new skills, editing existing skills, or verifying skills work before deployment.",
+      "local": false
+    },
+    {
+      "name": "reborn-mentor",
+      "path": ".agents/skills/reborn-mentor",
+      "description": "Use when the user invokes /Reborn, mentions Reborn.",
+      "local": true
+    }
+  ]
+}

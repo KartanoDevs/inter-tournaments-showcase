@@ -1,0 +1,136 @@
+.sponsor-cyber-card {
+  position: relative;
+  background: rgba(10, 15, 25, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sponsor-cyber-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4), inset 0 0 20px rgba(0, 229, 255, 0.1);
+}
+
+.glow-edge {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+  transition: all 0.6s ease;
+}
+
+.sponsor-cyber-card:hover .glow-edge {
+  left: 100%;
+}
+
+.sponsor-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 1rem;
+}
+
+.sponsor-logo-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.sponsor-logo {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  filter: grayscale(80%) opacity(0.8);
+  transition: filter 0.4s ease;
+}
+
+.sponsor-cyber-card:hover .sponsor-logo {
+  filter: grayscale(0%) opacity(1);
+}
+
+.sponsor-placeholder {
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.sponsor-details {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.sponsor-name {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+
+.sponsor-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.cyber-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.3), transparent);
+  margin: 1rem 0;
+}
+
+.link-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.cyber-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.cyber-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.cyber-btn-web:hover {
+  color: #fff;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.cyber-btn-ig:hover {
+  color: #fff;
+  border-color: #E1306C;
+  box-shadow: 0 0 10px rgba(225, 48, 108, 0.5);
+}
+
+.cyber-btn-fb:hover {
+  color: #fff;
+  border-color: #1877F2;
+  box-shadow: 0 0 10px rgba(24, 119, 242, 0.5);
+}

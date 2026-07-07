@@ -1,0 +1,21 @@
+/* Fuerza bruta letal para acuchillar el 'Choose file' nativo del navegador si asoma la cabeza */
+::ng-deep .filepond--browser {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  display: block; /* Mantiene la hitbox funcionalmente si lo necesita via opacity 0, 
+                    pero lo mata visualmente sin romper la estructura. */
+}
+
+/* Y si trata de colarse en algún otro nodo, nos aseguramos: */
+input[type="file"].filepond--browser::-webkit-file-upload-button {
+  display: none !important;
+}
+
+::ng-deep .filepond--root {
+  margin-bottom: 0 !important;
+}

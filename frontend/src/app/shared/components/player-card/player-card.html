@@ -1,0 +1,15 @@
+<div class="player-card glow-cyan" (click)="onCardAction()" role="button">
+  <div class="player-photo">
+    <img *ngIf="thumbUrl()" [src]="imageUrl()" [alt]="player().firstName" class="thumb-img" />
+    <i *ngIf="!thumbUrl()" class="pi pi-user placeholder-icon"></i>
+  </div>
+  <div class="player-info">
+    <div class="player-number text-glow-magenta">{{ player().number }}</div>
+    <div class="player-details">
+      <h3 class="player-name">{{ displayName() }}</h3>
+      <span class="player-position">
+        {{ player().position | positionLabel : gender() }}
+      </span>
+    </div>
+  </div>
+</div>

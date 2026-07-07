@@ -1,0 +1,13 @@
+node_modules
+dist
+
+# Variables de entorno — NUNCA subir al repositorio
+.env
+.env.production
+
+# Uploads de usuarios — se persisten en volumen Docker
+public/uploads/
+
+# Prisma client generado (se regenera en cada build)
+/src/generated/prisma
+/src/scripts/create-user.ts
