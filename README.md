@@ -26,8 +26,6 @@
 - [Tests](#tests)
 - [Backup automático a Dropbox (opcional)](#backup-automático-a-dropbox-opcional)
 - [Despliegue](#despliegue)
-- [Roadmap / Pendientes](#roadmap--pendientes)
-- [Contribución](#contribución)
 
 ---
 
@@ -280,23 +278,3 @@ El despliegue está automatizado con scripts en [`scripts/`](scripts/):
 - [`scripts/deploy.sh`](scripts/deploy.sh) — despliegue de la rama `main`.
 - [`scripts/deploy-4vs4.sh`](scripts/deploy-4vs4.sh) — despliegue de la rama `4vs4`.
 
----
-
-## Roadmap / Pendientes
-
-El módulo de **Torneos 4vs4** es la prioridad actual y se sigue puliendo. Pendientes identificados:
-
-- [ ] **Onboarding de jugadores**: permitir que un usuario con rol `PLAYER` cree o se asocie a su propia ficha la primera vez (TODOs en [`backend/src/controllers/player.controller.ts`](backend/src/controllers/player.controller.ts) y [`backend/src/routes/player.routes.ts`](backend/src/routes/player.routes.ts)).
-- [ ] **Retirar el módulo `Event` (legacy)** definitivamente una vez migrados los datos productivos.
-- [ ] **Capturas de pantalla** del módulo de torneos y del marcador para este README.
-
----
-
-## Contribución
-
-Las convenciones del proyecto (arquitectura, *design system* neón obligatorio, *skills* por tipo de tarea y formato de commits) están documentadas en **[AGENTS.md](AGENTS.md)**. En resumen:
-
-- **Commits** en formato *Conventional Commits*: `tipo[scope]: descripción` (p. ej. `feat[admin]: ...`, `fix[torneos]: ...`).
-- **TypeScript estricto** en ambos lados; paridad entre esquemas Zod (backend) y modelos del frontend.
-- Cualquier cambio visual **debe respetar** el tema cyberpunk neón.
-- **Tests Vitest en verde** para la lógica nueva no trivial.
